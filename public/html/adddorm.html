@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta itemprop="name" content="福建民宿基本信息登记表"/>
+    <meta itemprop="image" content="../img/config/meta.jpg" />
+    <meta name="description" itemprop="description" content="福建民宿基本信息登记表，通过填表可以直接提交给有关部门" />
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+
+    <title>福建民宿登记</title>
+    <style>
+        .dorm-main{
+            margin-right: 20px;
+            margin-left: 20px;
+            padding-bottom:10px ;
+            padding-top:10px ;
+        }
+        .dorm-main .van-cell-group {
+            margin-top: 10px;
+            border: 0px;
+        }
+        .dorm-main  .van-cell {
+            padding: 5px;
+            border: 1px solid #f1f1f1;
+            margin-top: 5px;
+        }
+        .dorm-main [class*=van-hairline]::after {
+            border: 0px solid #f9f9f9;
+        }
+        .dorm-main .van-col-11 {
+            width: 47%;
+        }
+        .dorm-main .van-col-offset-2 {
+            margin-left: 3%;
+        }
+        .dorm-title{font-size: 12px}
+        .dorm-gap{
+            height: 10px;
+            background: #f9f9f9;
+        }
+        .dorm-check{
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .dorm-main .van-checkbox__label {
+            margin-left: 5px;
+        }
+        .dorm-col-3 .van-col-7{
+            width: 31.333%;
+        }
+        .dorm-col-3 .van-col-offset-2{
+            margin-left: 3%;
+        }
+        .dorm-select{
+            padding: 5px;
+            border: 1px solid #f1f1f1;
+            margin-top: 5px;
+            width: 100%;
+            line-height: 24px;
+            height: 36px;
+        }
+        .dorm-input{
+            padding: 5px;
+            border: 1px solid #f1f1f1;
+            margin-top: 5px;
+            width: 100%;
+            line-height: 24px;
+            border: 0;
+            display: block;
+            width: 100%;
+            resize: none;
+            box-sizing: border-box;
+        }
+        .dorm-button .van-button--normal{
+            margin-top: 5px;
+            height: 36px;
+            line-height: 34px;
+            padding: 0px;
+            width: 100%;
+        }
+        .van-button--bottom-action {
+            background-color: #ff0000!important;
+        }
+    </style>
+</head>
+<body >
+<div id="app" v-cloak>
+    <header class="hc-header">
+        <van-row>
+            <a :href="go_back"><van-col span="4"><van-nav-bar left-arrow/></van-col></a>
+            <van-col span="16">福建民宿登记</van-col>
+            <van-col span="4"></van-col>
+        </van-row>
+    </header>
+    <div class="fixed_nav_bar"></div>
+    <div class="dorm-main">
+        <van-row class="dorm-col-3">
+            <van-col span="7">
+                <van-cell-group>
+                    <span class="dorm-title">民宿所属省</span>
+                    <div class="dorm-button">
+                        <van-button @click="show_area = true" >{{province.name}}</van-button>
+                    </div>
+                </van-cell-group>
+            </van-col>
+            <van-col span="7" offset="2" >
+                <van-cell-group>
+                    <span class="dorm-title">民宿所属市</span>
+                    <div>
+                        <div class="dorm-button">
+                            <van-button @click="show_area = true" >{{city.name}}</van-button>
+                        </div>
+                    </div>
+
+                </van-cell-group>
+            </van-col>
+            <van-col span="7" offset="2" >
+                <van-cell-group>
+                    <span class="dorm-title">民宿所属区县</span>
+                    <div>
+                        <div class="dorm-button">
+                            <van-button @click="show_area = true" >{{area.name}}</van-button>
+                        </div>
+                    </div>
+                </van-cell-group>
+            </van-col>
+        </van-row>
+        <van-popup v-model="show_area" position="bottom" :overlay="true">
+            <van-area :area-list="areaList" :value="area_code"
+                      @confirm="checkArea"
+                      @cancel="show_area = false"/>
+        </van-popup>
+        <van-cell-group>
+            <span class="dorm-title">商家姓名</span>
+            <van-field v-model="business_name" placeholder="营业执照名" />
+        </van-cell-group>
+        <van-cell-group>
+            <span class="dorm-title">店招名称</span>
+            <van-field v-model="merchant_name" placeholder="店铺招牌" />
+        </van-cell-group>
+        <van-cell-group>
+            <span class="dorm-title">统一社会信用代码</span>
+            <van-field v-model="code" placeholder="统一社会信用代码" />
+        </van-cell-group>
+        <van-row>
+            <van-col span="11">
+                <van-cell-group>
+                    <span class="dorm-title">法人姓名</span>
+                    <van-field v-model="juridical_person" placeholder="法人姓名" />
+                </van-cell-group>
+            </van-col>
+            <van-col span="11" offset="2" >
+                <van-cell-group>
+                    <span class="dorm-title">客服电话</span>
+                    <van-field v-model="service_mobile" placeholder="客服电话" />
+                </van-cell-group>
+            </van-col>
+        </van-row>
+        <van-row>
+            <van-col span="11">
+                <van-cell-group>
+                    <span class="dorm-title">负责人姓名</span>
+                    <van-field v-model="leader_name" placeholder="负责人姓名" />
+                </van-cell-group>
+            </van-col>
+            <van-col span="11" offset="2" >
+                <van-cell-group>
+                    <span class="dorm-title">负责人性别</span>
+                    <div>
+                        <!--<select name="leader_sex" class="dorm-select">
+                            <option value="1">男</option>
+                            <option value="2">女</option>
+                        </select>-->
+                        <select  v-model="leader_sex" class="dorm-select">
+                            <option  v-for="sex in sexList" :value="sex.value" >{{sex.name}}</option>
+                        </select>
+                    </div>
+                </van-cell-group>
+            </van-col>
+        </van-row>
+        <van-row>
+            <van-col span="11">
+                <van-cell-group>
+                    <span class="dorm-title">负责人手机</span>
+                    <van-field v-model="leader_mobile" placeholder="负责人手机" />
+                </van-cell-group>
+            </van-col>
+            <van-col span="11" offset="2" >
+                <van-cell-group>
+                    <span class="dorm-title">负责人邮箱</span>
+                    <van-field v-model="leader_email" placeholder="负责人邮箱" />
+                </van-cell-group>
+            </van-col>
+        </van-row>
+        <van-row>
+            <van-col span="11">
+                <van-cell-group>
+                    <span class="dorm-title">负责人QQ</span>
+                    <van-field v-model="leader_qq" placeholder="负责人QQ" />
+                </van-cell-group>
+            </van-col>
+            <van-col span="11" offset="2" >
+                <van-cell-group>
+                    <span class="dorm-title">负责人微信</span>
+                    <van-field v-model="leader_wx" placeholder="负责人微信" />
+                </van-cell-group>
+            </van-col>
+        </van-row>
+    </div>
+    <div class="dorm-gap"></div>
+    <div class="dorm-main">
+        <span class="dorm-title">经营资质（有多少勾选多少，没有则不填）</span>
+        <van-checkbox-group v-model="papers_result">
+            <van-row>
+                <van-col  v-for="(item,index) in papers"  :key="index" span="8" class="dorm-check">
+                    <van-checkbox :name="index" /><span class="dorm-title">{{ item }}</span>
+                </van-col>
+            </van-row>
+        </van-checkbox-group>
+    </div>
+    <div class="dorm-gap"></div>
+    <div class="dorm-main">
+        <span class="dorm-title">经营品类</span>
+        <van-checkbox-group v-model="type_result">
+            <van-row>
+                <van-col  v-for="(item,index) in type"  :key="index" span="8" class="dorm-check">
+                    <van-checkbox :name="index" /><span class="dorm-title">{{ item }}</span>
+                </van-col>
+            </van-row>
+        </van-checkbox-group>
+    </div>
+    <div class="dorm-gap"></div>
+    <div class="dorm-main">
+        <span class="dorm-title">经营品牌</span>
+        <van-checkbox-group v-model="brand_result">
+            <van-row>
+                <van-col  v-for="(item,index) in brand"  :key="index" span="8" class="dorm-check">
+                    <van-checkbox :name="index" /><span class="dorm-title">{{ item }}</span>
+                </van-col>
+            </van-row>
+        </van-checkbox-group>
+    </div>
+    <div class="dorm-gap"></div>
+    <div class="dorm-main">
+        <span class="dorm-title">主题特色</span>
+        <van-checkbox-group v-model="feature_result">
+            <van-row>
+                <van-col  v-for="(item,index) in feature"  :key="index" span="8" class="dorm-check">
+                    <van-checkbox :name="index" /><span class="dorm-title">{{ item }}</span>
+                </van-col>
+            </van-row>
+        </van-checkbox-group>
+    </div>
+    <div class="dorm-gap"></div>
+    <div class="dorm-main">
+        <span class="dorm-title">配套设施</span>
+        <van-checkbox-group v-model="config_result">
+            <van-row>
+                <van-col  v-for="(item,index) in config"  :key="index" span="8" class="dorm-check">
+                    <van-checkbox :name="index" /><span class="dorm-title">{{ item }}</span>
+                </van-col>
+            </van-row>
+        </van-checkbox-group>
+    </div>
+    <div class="dorm-gap"></div>
+    <div class="dorm-main">
+        <van-cell-group>
+            <span class="dorm-title">客房数量（间）</span>
+            <van-field v-model="room_num" placeholder="客房数量" />
+        </van-cell-group>
+        <van-popup v-model="show" position="top" :overlay="false">
+            内容
+        </van-popup>
+        <van-cell-group>
+            <span class="dorm-title">最后装修时间</span>
+            <div class="dorm-button">
+                <van-button   @click="show_adorn = true" >{{adorn_time}}</van-button>
+            </div>
+            <van-popup v-model="show_adorn" position="bottom" :overlay="true">
+                <van-datetime-picker
+                        v-model="currentDate"
+                        type="date"
+                        title="年月日"
+                        :min-date="minDate"
+                        @cancel="show_adorn = false"
+                        @confirm="checkTime"
+                />
+            </van-popup>
+        </van-cell-group>
+        <van-cell-group>
+            <span class="dorm-title">投资规模及民宿特色</span>
+            <van-field v-model="trait" placeholder="投资规模及民宿特色" />
+        </van-cell-group>
+        <van-row>
+            <van-col span="11">
+                <van-cell-group>
+                    <span class="dorm-title">营业收入（年/万元）</span>
+                    <van-field v-model="earning" placeholder="营业收入" />
+                </van-cell-group>
+            </van-col>
+            <van-col span="11" offset="2" >
+                <van-cell-group>
+                    <span class="dorm-title">租期</span>
+                    <van-field v-model="lease" placeholder="租期" />
+                </van-cell-group>
+            </van-col>
+        </van-row>
+        <van-row class="dorm-col-3">
+            <van-col span="24" >
+                <span class="dorm-title">入住率（全年，或以开业时间算一个年度）</span>
+            </van-col>
+            <van-col span="7" >
+                <van-cell-group>
+                    <van-field v-model="ratio" placeholder="入住率" />
+                </van-cell-group>
+            </van-col>
+            <van-col span="7" offset="2">
+                <van-cell-group>
+                    <van-field v-model="price" placeholder="均价" />
+                </van-cell-group>
+            </van-col>
+            <van-col span="7" offset="2">
+                <van-cell-group>
+                    <van-field v-model="rent" placeholder="年租金" />
+                </van-cell-group>
+            </van-col>
+        </van-row>
+
+        <van-cell-group>
+            <span class="dorm-title">员工数量</span>
+            <van-field v-model="staff_num" placeholder="员工数量" />
+        </van-cell-group>
+        <van-cell-group>
+            <span class="dorm-title">获奖情况（*年*月*日获得***单位***奖项）</span>
+            <van-field type="textarea" v-model="awards" placeholder="获奖情况" />
+        </van-cell-group>
+        <van-cell-group>
+            <span class="dorm-title">受到处罚情况</span>
+            <van-field type="textarea" v-model="penalty" placeholder="受到处罚情况" />
+        </van-cell-group>
+        <van-cell-group>
+            <span class="dorm-title">对当地民宿发展政策的意见和建议</span>
+            <van-field type="textarea" v-model="opinion" placeholder="对当地民宿发展政策的意见和建议" />
+        </van-cell-group>
+        <van-cell-group>
+            <span class="dorm-title">经营过程中遇到的困难</span>
+            <van-field type="textarea" v-model="hard" placeholder="字数500字以内" />
+        </van-cell-group>
+        <van-cell-group>
+            <span class="dorm-title">民宿美图({{num}}/3)</span>
+            <div >
+                <van-uploader :before-read="compress"  hiddent></van-uploader>
+                <van-row class="dorm-col-3 hc-margin-bottom-xs">
+                    <van-col span="7" >
+                        <img :src="img_1" width="100%" v-show="show_1">
+                    </van-col>
+                    <van-col span="7" offset="2">
+                        <img :src="img_2" width="100%" v-show="show_2">
+                    </van-col>
+                    <van-col span="7" offset="2">
+                        <img :src="img_3" width="100%"  v-show="show_3">
+                    </van-col>
+                </van-row>
+                <van-row class="dorm-col-3">
+                    <van-col span="7">
+                        <img src="../img/config/dorm_a.png" width="100%"  @click = 'addImg'>
+                    </van-col>
+                    <van-col span="7" offset="2">
+                        <img src="../img/config/dorm_d.png" width="100%" @click = 'deleteImg'>
+                    </van-col>
+                </van-row>
+
+            </div>
+        </van-cell-group>
+
+    </div>
+    <div class="fixed_tab_bar"></div>
+    <van-button bottom-action style="position: fixed;bottom: 0;" @click="submit">提交信息</van-button>
+
+</div>
+
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script src="../js/dist/lrz.bundle.js"></script>
+<script src="../js/area.js"></script>
+<script>
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                go_back:'../index.html',
+                sexList:[
+                    {'value':'1','name':'男'},
+                    {'value':'2','name':'女'},
+                ],
+                num:0,
+                show_1:false,
+                show_2:false,
+                show_3:false,
+                img_1:false,
+                img_2:false,
+                img_3:false,
+                login_check: false,
+                merchant_id: false,
+                areaList:areaData,
+                province:{'code':'350000','name': '福建省'},
+                city:{'code':'350200','name': '厦门市'},
+                area:{'code':'350203','name': '思明区'},
+                area_code:'350203',
+                show_area: false,
+                show: false,
+                show_adorn:false,
+                minDate: new Date(2010, 0, 1),
+                currentDate: new Date(),
+                business_name:'',
+                merchant_name:'',
+                code:'',
+                juridical_person:'',
+                service_mobile:'',
+                leader_name:'',
+                leader_sex:1,
+                leader_mobile:'',
+                leader_email:'',
+                leader_qq:'',
+                leader_wx:'',
+                papers:[],
+                papers_result:[],
+                type:[],
+                type_result:[],
+                brand:[],
+                brand_result:[],
+                feature:[],
+                feature_result:[],
+                config:[],
+                config_result:[],
+                room_num:'',
+                adorn_time:'',
+                trait:'',
+                earning:'',
+                lease:'',
+                ratio:'',
+                price:'',
+                rent:'',
+                staff_num:'',
+                awards:'',
+                penalty:'',
+                opinion:'',
+                hard:'',
+                img_array:[],
+            };
+        },
+        mounted () {
+            if (document.referrer != '') {
+                this.go_back = document.referrer;
+            }
+            var post_data = {
+                method: 'get.form.config',
+                nonce: 'get.form.config',
+            };
+            var _self = this
+            axios.post('/api/v1', api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    if (response.data.code == 200 ) {
+                        var data = response.data.data;
+                        _self.brand = data.config_brand;
+                        _self.config = data.config_config;
+                        _self.feature = data.config_feature;
+                        _self.papers = data.config_papers;
+                        _self.type = data.config_type;
+                    } else {
+                        pop_error_msg(response.data.msg, _self)
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登陆',
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    if (document.referrer != '') {
+                        window.history.go(-1);
+                    }
+
+                });
+            }else {
+
+                this.merchant_id = obj.data.id;
+                this.login_check = true;
+                var post_data = {
+                    method: 'get.dorm',
+                    nonce: 'get.dorm',
+                    merchant_id: this.merchant_id,
+                };
+                var _self = this
+                axios.post('/api/v1', api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        if (response.data.code == 200 || response.data.code == 202) {
+                            var data = response.data.data;
+                            if (response.data.code == 200) {
+                                _self.business_name = data.business_name;
+                                _self.merchant_name = data.merchant_name;
+                                _self.code = data.code;
+                                _self.juridical_person = data.juridical_person;
+                                _self.service_mobile = data.service_mobile;
+                                _self.leader_name = data.leader_name;
+                                _self.leader_sex = data.sex;
+                                _self.leader_mobile = data.leader_mobile;
+                                _self.leader_email = data.leader_email;
+                                _self.leader_qq = data.leader_qq;
+                                _self.leader_mobile = data.leader_mobile;
+                                _self.leader_wx = data.leader_wx;
+                                _self.papers_result = data.papers;
+                                _self.type_result = data.type;
+                                _self.brand_result = data.brand;
+                                _self.config_result = data.config;
+                                _self.feature_result = data.feature;
+                                _self.room_num = data.room_num;
+                                _self.adorn_time = data.adorn_time;
+                                _self.trait = data.trait;
+                                _self.earning = data.earning;
+                                _self.lease = data.lease;
+                                _self.ratio = data.ratio;
+                                _self.price = data.price;
+                                _self.rent = data.rent;
+                                _self.staff_num = data.staff_num;
+                                _self.awards = data.awards;
+                                _self.penalty = data.penalty;
+                                _self.opinion = data.opinion;
+                                _self.hard = data.hard;
+                                _self.img_array = data.img;
+                                _self.num = data.img.length;
+                                if (data.img[0]) {
+                                    _self.show_1 = true;
+                                    _self.img_1 = '../storage' + data.img[0]
+                                }
+                                if (data.img[1]) {
+                                    _self.show_2 = true;
+                                    _self.img_2 = '../storage' + data.img[1]
+                                }
+                                if (data.img[2]) {
+                                    _self.show_3 = true;
+                                    _self.img_3 = '../storage' + data.img[2]
+                                }
+                            }
+                        } else {
+                            pop_error_msg(response.data.msg, _self)
+
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            }
+        },
+        methods: {
+            //图片上传压缩
+            compress(file){
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.num += 1;
+                    if(_self.show_1 == false){
+                        _self.img_1 = rst.base64;
+                        _self.show_1 = true;
+                    }else if(_self.show_2 == false){
+                        _self.img_2 = rst.base64;
+                        _self.show_2 = true;
+                    }else{
+                        _self.img_3 = rst.base64;
+                        _self.show_3 = true;
+                    }
+
+                })
+            },
+            //提交图片
+            submit(){
+                if(this.merchant_id == false){
+                    this.$dialog.confirm({
+                        title: '请先登陆',
+                    }).then(() => {
+                        window.location.href = 'login.html';
+                    }).catch(() => {
+
+                    });
+                    return false
+                }
+                if(this.num == 0){
+                    this.$dialog.alert({
+                        title: '请上传图片'
+                    }).then(() => {
+
+                    });
+                    return false
+                }
+                this.img_array = [];
+                if(this.num == 3){
+                    this.img_array=[this.img_1,this.img_2,this.img_3];
+
+                }else if(this.num == 2){
+                    this.img_array=[this.img_1,this.img_2];
+                }else{
+                    this.img_array=[this.img_1]
+                }
+
+
+                var post_data = {
+                    method: 'save.dorm',
+                    nonce: 'save.dorm',
+                    img: JSON.stringify(this.img_array),
+                    merchant_id: this.merchant_id,
+                    business_name:this.business_name,
+                    merchant_name:this.merchant_name,
+                    code:this.code,
+                    juridical_person:this.juridical_person,
+                    service_mobile:this.service_mobile,
+                    leader_name:this.leader_name,
+                    sex:this.leader_sex,
+                    leader_mobile:this.leader_mobile,
+                    leader_email:this.leader_email,
+                    leader_qq:this.leader_qq,
+                    leader_wx:this.leader_wx,
+                    papers:JSON.stringify(this.papers_result),
+                    type:JSON.stringify(this.type_result),
+                    brand:JSON.stringify(this.brand_result),
+                    feature:JSON.stringify(this.feature_result),
+                    config:JSON.stringify(this.config_result),
+                    room_num:this.room_num,
+                    adorn_time:this.adorn_time,
+                    trait:this.trait,
+                    earning:this.earning,
+                    lease:this.lease,
+                    ratio:this.ratio,
+                    price:this.price,
+                    rent:this.rent,
+                    staff_num:this.staff_num,
+                    awards:this.awards,
+                    penalty:this.penalty,
+                    opinion:this.opinion,
+                    hard:this.hard,
+                    province:JSON.stringify(this.province),
+                    city:JSON.stringify(this.city),
+                    area:JSON.stringify(this.area),
+                };
+                var _self = this;
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200){
+                            _self.$dialog.alert({
+                                title: '信息录入成功'
+                            }).then(() => {
+                                window.location.href = '../index.html'
+                            });
+                        }else{
+                            pop_error_msg(data.msg,_self)
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+
+            },
+            //修改省市
+            checkArea(data){
+                this.province = data['0']
+                this.city = data['1']
+                this.area = data['2']
+                this.area_code = data['2'].code;
+                this.show_area = false;
+            },
+            //选择时间
+            checkTime(data){
+                this.adorn_time = data.Format("yyyy-MM-dd")
+                this.show_adorn = false;
+            },
+            //添加图片
+            addImg(){
+                if(this.num == 3){
+                    this.$dialog.alert({
+                        title: '只能上传三张'
+                    }).then(() => {
+
+                    });
+                }else{
+                    $('.van-uploader__input').click();
+                }
+
+            },
+            //删除图片
+            deleteImg(){
+                if(this.num == 0){
+                    this.$dialog.alert({
+                        title: '请先添加图片'
+                    }).then(() => {
+                    });
+                }else{
+                    this.num -= 1;
+                    if(this.show_3 == true){
+                        this.img_3 = '';
+                        this.show_3 = false;
+
+                    }else if(this.show_2 == true){
+                        this.img_2 = '';
+                        this.show_2 = false;
+                    }else{
+                        this.img_1 = '';
+                        this.show_1 = false;
+                    }
+
+                }
+            }
+
+        }
+    })
+
+</script>
+
+</body>
+</html>

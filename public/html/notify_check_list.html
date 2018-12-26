@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .notify-container{
+            width: 100vw;
+        }
+        .notify-item{
+            display: flex;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .notify-item-padding{
+            padding: 2vw;
+        }
+        .notify-item-title {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 12vw;
+            flex-grow: 1;
+        }
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .title-font {
+            font-size: 1.1rem;
+        }
+        .content-font {
+            font-size: 0.9em;
+            color: #a0a0a0;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 60vw;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" style="background-color: #fff;" v-cloak>
+    <div>
+        <van-nav-bar title="消息通知" fixed left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+    <div class="notify-container">
+        <div class="notify-item">
+
+            <div class="flex-center">
+                <div class="notify-item-padding">
+                    <svg width="12vw" height="12vw" viewBox="0 0 0.0823679 0.0823679">
+                        <circle style="fill:#0093DD;" cx="0.041184" cy="0.041184" r="0.041184"/>
+                        <path style="fill:white;" d="M0.0391624 0.0219469c0,0 -6.31558e-005,-0.00329259 0.00223752,-0.00325863 0.00195518,2.86589e-005 0.00218498,0.00183683 0.00226512,0.00325863 0,0 0.00828456,0.00036036 0.00954502,0.00657351 0.00126099,0.00621368 9.02226e-005,0.0117066 0.00153113,0.0153989 0.00144038,0.0036917 0.00558319,0.00765406 0.0072937,0.00972546 0.00171104,0.00207087 -0.00108692,0.00301662 -0.00108692,0.00301662l-0.0131905 0c0,0 -0.000225556,0.00719923 -0.00614363,0.00701826 -0.00591807,-0.000180445 -0.00664091,-0.00688292 -0.00664091,-0.00688292l-0.0137303 0c0,0 -0.0025671,-0.000766892 -0.000899042,-0.00301874 0,0 0.00621209,-0.00544626 0.00729264,-0.0101288 0.00108055,-0.00468255 -2.01674e-005,-0.0116313 0.00155607,-0.0149233 0.00157624,-0.00329206 0.00456739,-0.00650876 0.00997013,-0.0067789z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="notify-item-padding notify-item-title">
+                <div class="title-font">审核通知</div>
+                <div class="content-font">
+                    <span>[已读]</span>
+                    <span>您申请的民宿核验已经审核通过！请前往相关页面查看</span>
+                </div>
+            </div>
+            <div class="notify-item-padding">
+                <div class="content-font">
+                    <span>9月20日</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="notify-item">
+            <div class="flex-center">
+                <div class="notify-item-padding">
+                    <svg width="12vw" height="12vw" viewBox="0 0 0.0175075 0.0175075">
+                        <circle style="fill:#E77817;" cx="0.00875371" cy="0.00875375" r="0.00875373"/>
+                        <path style="fill:white" d="M0.00723733 0.00884028l0 0.0040959 -0.00194343 0c0,0 -0.00120841,-0.000424544 -0.00128305,-0.00139861l0 -0.00457054c0,0 0.000694595,-0.0041827 0.0046432,-0.00398406 0.0039486,0.000198633 0.00484257,0.0034023 0.00484257,0.0040478l0 0.00618366c0,0 -7.43943e-005,0.000769733 -0.00131628,0.00131628l-0.00342685 0 0 -0.0011174 0.00367533 0 0 -0.000471908c0,0 -0.00217752,0.000122007 -0.00221026,0 -3.27335e-005,-0.000122007 0,-0.00407259 0,-0.00407259 0,0 0.00225117,0 0.00225117,0 0,0 0.000257156,-0.00444481 -0.00371624,-0.00466824 -0.000373707,0 -0.00397365,4.88523e-005 -0.00362598,0.0045936l0.00210982 4.61245e-005z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="notify-item-padding notify-item-title">
+                <div class="title-font">意见反馈</div>
+                <div class="content-font">
+                    <span>[未读]</span>
+                    <span>尊敬的商户：您所反馈的问题已处理，请前往查看处理情况</span>
+                </div>
+            </div>
+            <div class="notify-item-padding">
+                <div class="content-font">
+                    <span>9月20日</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+    var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                token: '',
+                merchant_id: '',
+            };
+        },
+        methods: {
+            onClickLeft() {
+                window.history.go(-1);
+            }
+        },
+        mounted () {
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登录',
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.location.href = '../index.html';
+                });
+            }else{
+                let post_data = {
+                    method: 'merchant.get.one',
+                    nonce: 'merchant.get.one',
+                    merchant_id: obj.data.id,
+                    token: obj.data.api_token,
+                }
+                axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                    if (response.data.code == '200') {
+
+                    }else {
+                        if(response.data.code == '005') {
+                            this.login_check = false;
+                            window.localStorage.removeItem('HC.merchant');
+                            this.$dialog.confirm({
+                                title: '请重新登录',
+                                message: response.data.msg
+                            }).then(() => {
+                                window.location.href = 'login.html';
+                            }).catch(() => {
+                                window.location.href = '../index.html';
+                            });
+                        }
+                    }
+                }).catch(error => {
+                    console.log(error);
+                });
+
+            }
+
+        }
+    });
+</script>
+
+</body>
+</html>

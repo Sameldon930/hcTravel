@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .article-container p{
+            color: #101010;
+        }
+        .article-title{
+            text-align: center;
+        }
+        .article-content p{
+            -webkit-margin-before: 0.5rem;
+            -webkit-margin-after: 0.5rem;
+            text-indent: 1.8rem;
+            font-size: 0.9rem;
+        }
+        .agree-item {
+            padding-left: 2rem;
+            font-size: 0.9rem;
+        }
+        .agree-item .van-checkbox--checked {
+            color: #fff;
+            border-color: #ff0000;
+            background-color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar title="民宿申请" fixed/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+    <van-row>
+        <div style="padding: 1rem" class="article-container">
+            <div class="article-title">《智慧黄厝服务协议》</div>
+            <div class="article-content">
+                <p style="text-indent: 0;">欢迎您使用智慧黄厝的服务！</p>
+                <p>
+                    为使用智慧黄厝的服务，您应当阅读并遵守《智慧黄厝服务协议》（以下简称“本协议”）。请您务必审慎阅读、充分理解各条款内容，您使用智慧黄厝的服务即视为您已阅读并同意下述协议的内容。
+                </p>
+                <p>一、【用户个人信息保护】</p>
+                <p>1.1保护用户个人信息是智慧黄厝的一项基本原则。智慧黄厝将按照本协议的规定收集、使用、储存和分享您的个人信息。</p>
+                <p>1.2您在注册帐号或使用本服务的过程中，可能需要填写一些必要的信息。若国家法律法规有特殊规定的，您需要填写真实的身份信息。若您填写的信息不完整，则无法使用本服务或在使用过程中受到限制。</p>　　
+                <p>1.3一般情况下，您可随时浏览、修改自己提交的信息，但出于安全性的考虑，您可能无法修改注册时提供的初始注册信息及其他验证信息。</p>　　
+                <p>1.4智慧黄厝将运用各种安全技术和程序建立完善的管理制度来保护您的个人信息，以免遭受未经授权的访问、使用或披露。</p>　　
+                <p>1.5智慧黄厝不会将您的个人信息转移或披露给任何非关联的第三方，除非：</p>　　
+                <p>（1）相关法律法规或法院、政府机关要求；</p>　　
+                <p>（2）为完成合并、分立、收购或资产转让而转移；</p>　　
+                <p>（3）为提供您要求的服务所必需。</p>　　
+                <p>二、【用户个人信息真实信保证】</p>　　
+                <p>2.1用户承诺秉承实事求是作风，对所提供的文件、证件、有关材料及其复印件的有效性、合法性、真实性、作保证，绝无弄虚作假，并为此承担全部责任和后果。</p>　　
+                <p>三、【其他】</p>
+                <p>如果您对本协议有意见或建议，可与智慧黄厝客户联系，我们会给予您必要的帮助。（正文完）</p>
+                <p></p>
+            </div>
+            <div class="agree-item"><van-checkbox v-model="agreement">我已阅读并同意此协议</van-checkbox></div>
+        </div>
+    </van-row>
+    <div class="fixed_tab_bar"></div>
+    <van-button bottom-action :class="agreement ? 'style-color' : ''" style="position: fixed;bottom: 0;" @click="nextStep" :disabled="!agreement">下一步</van-button>
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+    var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                agreement: false,
+            };
+        },
+        methods: {
+            onClickLeft() {
+                window.location.href = 'homestay.html'
+            },
+            nextStep() {
+                let post_data = {
+                    method: 'set.agreement',
+                    nonce: 'set.agreement',
+                    merchant_id: obj.data.id,
+                    token: obj.data.api_token,
+                }
+                axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                    if (response.data.code == '200') {
+                        window.location.href = 'homestay_process.html'
+                    }else {
+                        if(response.data.code == '005') {
+                            window.localStorage.removeItem('HC.merchant');
+                            this.$dialog.confirm({
+                                title: '请重新登录',
+                                message: response.data.msg
+                            }).then(() => {
+                                window.location.href = 'login.html';
+                            }).catch(() => {
+                                window.location.href = '../index.html';
+                            });
+                        } else{
+                            console.log(response.data);
+                        }
+                    }
+                }).catch(error => {
+                    console.log(error);
+                });
+
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

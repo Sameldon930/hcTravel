@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .card_container {
+            display: flex;
+            flex-wrap:wrap;
+        }
+        .hc-card {
+            width: 46vw;
+            margin:1vw;
+            padding: 1vw;
+            background: #fff;
+        }
+        .hc-card img {
+            width: 46vw;
+            height:30vw;
+        }
+        .hc-price {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 3px;
+        }
+        .hc-card-title {
+            font-size: 1.1rem;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            padding: 3px 2px;
+        }
+        .list_null{
+            display:flex;
+            width:100%;
+            margin: 1rem auto;
+            background-color:#fff;
+            height: 10vh;
+            justify-content: center;
+            border-radius: 40px;
+        }
+        .list_null_word{
+            display: flex;
+            margin: auto;
+            font-size: 1.5em;
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar fixed title="二手物品" left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div  v-show="silly" class="card_container">
+        <div class="list_null" v-if="items == ''||items == null"
+             v-cloak>
+            <div class="list_null_word">暂无二手信息!</div>
+        </div>
+        <div v-for="item in items">
+            <a :href="'goods_detail.html?id='+item.id">
+                <div class="hc-card">
+                    <div style="width: 100%;">
+                        <img :src="'../storage/serve/'+item.thumbnail"
+                             alt="">
+                    </div>
+                    <div class="hc-card-title">
+                        <a>{{item.title}}</a>
+                    </div>
+                    <div class="hc-price">
+                        <div style="color: #e53c46">￥{{item.price}}</div>
+                        <div style="font-size: 0.8rem;line-height: 1.4rem;">{{item.new_level}}</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+
+    var post_data = {
+        method: 'goods.get.list',
+        nonce: 'goods.get.list',
+
+    };
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                silly:false
+            };
+        },
+        mounted () {
+            var _self =this ;
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        _self.items = data.data;
+                        _self.silly = true;
+
+                    }
+                }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        methods: {
+
+            onClickLeft(){
+                location.href="../html/service.html"
+            }
+
+        }
+    });
+
+</script>
+
+</body>
+</html>

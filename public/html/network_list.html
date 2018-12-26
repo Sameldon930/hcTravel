@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+
+
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar fixed
+                     title="网络营销"
+                     left-arrow
+                     @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div>
+        <div class="am-g am-padding-top-sm" style="width: 100%;text-align: center;">
+            <div class="am-u-sm-12  am-text-lg" v-if="!title" v-cloak>网络营销标题未知</div>
+            <div class="am-u-sm-12  am-text-lg" else v-cloak><h2>{{title}}</h2></div>
+            <div class="am-u-sm-12  am-text-lg" v-if="!name" v-cloak>公司名未知</div>
+            <div class="am-u-sm-12  am-text-lg" else v-cloak><h2>{{name}}</h2></div>
+            <div class="am-u-sm-12 wis-text" v-if="!content" v-cloak>
+                描述内容
+            </div>
+            <div class="am-u-sm-12 wis-text" v-html='content' style="margin: 10px;"v-else v-cloak>
+                {{content}}
+            </div>
+            <div class="am-u-sm-12 wis-text" v-if="!address" v-cloak style="white-space: normal;text-align: right;margin-right: 10px;">
+                地址
+            </div>
+            <div class="am-u-sm-12 wis-text" v-html='address' style="white-space: normal;text-align: right;margin-right: 10px;"v-else v-cloak>
+                {{address}}
+            </div>
+
+            <div class="am-u-sm-12 wis-text" v-if="!mobile" style="white-space: normal;text-align: right;margin-right: 10px;"v-cloak>
+                联系电话
+            </div>
+            <div class="am-u-sm-12 wis-text" v-html='mobile' style="white-space: normal;text-align: right;margin-right: 10px;" v-else v-cloak>
+                {{mobile}}
+            </div>
+            <div class="am-u-sm-12 wis-font-gray am-text-center am-padding-vertical am-text-xs" style="white-space: normal;text-align: right;margin-bottom:10px;margin-right: 10px;">
+                <span v-if="!created_time"   v-cloak>
+                时间
+                </span>
+                <span v-else  v-cloak>
+                {{created_time}}
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+    //活动内容
+    var post_data = {
+        id: data_id,
+        method: 'marketing.get.one',
+        nonce: 'marketing.get.one',
+
+    };
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                title:'',
+                name:'',
+                address:'',
+                content:'',
+                mobile:'',
+                created_time:''
+            };
+        },
+        mounted () {
+            var _self =this ;
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        console.log(response.data.data.content)
+                        _self.items = data.data;
+                        _self.title = data.data.title;
+                        _self.name = data.data.name;
+                        _self.address = data.data.address;
+                        _self.content = data.data.content;
+                        _self.mobile = data.data.mobile;
+                        _self.created_time = data.data.created_time;
+
+                    }
+
+                }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        methods: {
+
+            onClickLeft(){
+                location.href="/html/network.html"
+            }
+
+        }
+    });
+</script>
+
+</body>
+</html>

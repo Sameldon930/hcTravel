@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .notify-container{
+            width: 100vw;
+        }
+        .notify-item{
+            margin: 3vw;
+            background-color: #fff;
+            border-radius: 1vw;
+        }
+        .item-card {
+            display: flex;
+            padding: 2vw;
+            flex-direction: column;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .item-head{
+            display: flex;
+            padding-bottom: 0.8rem;
+            justify-content: space-between;
+        }
+        .item-title {
+            max-width: 75vw;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .item-bottom {
+            font-size: 0.8rem;
+            text-align: right;
+            color: #b0b0b0;
+        }
+        .item-status {
+        }
+        .list_null{
+            display:flex;
+            width:100%;
+            margin: 1rem auto;
+            background-color:#fff;
+            height: 10vh;
+            justify-content: center;
+            border-radius: 40px;
+        }
+        .list_null_word{
+            display: flex;
+            margin: auto;
+            font-size: 1.5em;
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar title="反馈信息" fixed left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+    <div  v-show="silly" class="notify-container">
+        <div class="list_null" v-if="items == ''||items == null"
+             v-cloak>
+            <div class="list_null_word">暂无反馈信息!</div>
+        </div>
+        <div v-for="item in items">
+            <a :href="'notify_feedback_detail.html?id='+item.id">
+                <div class="notify-item">
+                    <div class="item-card">
+                        <div class="item-head">
+                            <div class="item-title" >尊敬的商户，你好：...</div>
+                            <div class="item-status">
+                                <van-tag plain type="success" v-if="item.is_read == 1">
+                                    <span>已读</span>
+                                </van-tag>
+                                <van-tag plain type="danger" v-else>
+                                    <span >未读</span>
+                                </van-tag>
+                            </div>
+                        </div>
+                        <div class="item-bottom">
+                            {{item.create_at}}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+    var data_id = GetQueryString("merchant_id");
+    var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                token: '',
+                merchant_id: '',
+                items:'',
+                data:'',
+                silly:false
+            };
+        },
+        methods: {
+            onClickLeft() {
+                location.href='./notify.html';
+            }
+        },
+        mounted () {
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登录',
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.location.href = '../index.html';
+                });
+            }else{
+                var post_data = {
+                    method: 'feedback.get.list',
+                    nonce: 'feedback.get.list',
+                    merchant_id: obj.data.id,
+                    token: obj.data.api_token,
+                }
+                axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                    var data = response.data;
+                    if (response.data.code == '200') {
+                        this.items = data.data;
+                        this.silly = true;
+                    }else {
+                        if(response.data.code == '005') {
+                            this.login_check = false;
+                            window.localStorage.removeItem('HC.merchant');
+                            this.$dialog.confirm({
+                                title: '请重新登录',
+                                message: response.data.msg
+                            }).then(() => {
+                                window.location.href = 'login.html';
+                            }).catch(() => {
+                                window.location.href = '../index.html';
+                            });
+                        }
+                    }
+                }).catch(error => {
+                    console.log(error);
+                });
+
+            }
+
+        }
+    });
+</script>
+
+</body>
+</html>

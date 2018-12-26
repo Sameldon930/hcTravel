@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .van-cell__value{
+            font-size: 0.8em;
+            color:#4b0;
+        }
+    </style>
+    <title>智慧黄厝</title>
+</head>
+<body>
+<div id="app" v-cloak>
+    <header class="hc-header">
+        <a href="merchant.html"><van-col span="4"> <van-nav-bar left-arrow/></van-col></a>
+        <van-col span="16">商户入驻</van-col>
+        <van-col span="4"></van-col>
+    </header>
+    <div class="fixed_nav_bar"></div>
+
+    <van-cell-group>
+        <a href="merchant_shop.html">
+            <van-cell  title="商家信息" is-link :value="merchant_status" />
+        </a>
+    </van-cell-group>
+    <van-cell-group>
+        <a href="business.html">
+            <van-cell  title="营业执照" is-link :value="business_status"/>
+        </a>
+    </van-cell-group>
+    <van-cell-group>
+        <a href="identity.html">
+            <van-cell  title="法人身份证" is-link :value="identity_status"/>
+        </a>
+    </van-cell-group>
+    <van-cell-group>
+        <van-cell  title="租赁合同" is-link @click = "goLease" :value="lease_status"/>
+    </van-cell-group>
+    <div class="hc-submit-dev">
+        <van-button size="large"  type="primary" @click="goSubmit">确认并申请验证</van-button>
+    </div>
+</div>
+
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                login_check: false,
+                merchant_id: false,
+                token:false,
+                merchant_status:'',
+                property_status:'',
+                alibi_status:'',
+                identity_status:'',
+                business_status:'',
+                lease_status:'',
+            };
+        },
+        mounted () {
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登陆',
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.history.go(-1);
+                });
+            } else {
+                this.merchant_id = obj.data.id;
+                this.token = obj.data.api_token;
+                this.login_check = true;
+            }
+            var post_data = {
+                method: 'get.verify.status',
+                nonce: 'get.verify.status',
+                merchant_id: this.merchant_id,
+                token: this.token,
+            };
+            var _self = this
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    if(response.data.code == 200){
+                        var data = response.data.data;
+                        if(data.merchant == 2 || data.merchant == 3){
+                            _self.$dialog.alert({
+                                title: data.merchant_msg,
+                            }).then(() => {
+                                window.location.href = "merchant.html"
+                            });
+                        }
+                        if(data.dorm == 2 || data.dorm == 3){
+                            _self.$dialog.alert({
+                                title: data.dorm_msg,
+                            }).then(() => {
+                                window.location.href = "merchant.html"
+                            });
+                        }
+
+                        if(data.merchant_data.merchant_info){
+                            if(data.merchant_data.merchant_info.merchant_name){
+                                _self.merchant_status='已录入';
+                            }
+                            if(data.merchant_data.merchant_info.business_img){
+                                _self.business_status='已录入';
+                            }
+                            if(data.merchant_data.merchant_info.identity_contrary){
+                                _self.identity_status='已录入';
+                            }
+                            if(data.merchant_data.merchant_info.contract_tenancy){
+                                _self.lease_status='已录入';
+                            }
+                        }
+                    }else{
+                        _self.$dialog.alert({
+                            message: response.data.msg
+                        }).then(() => {
+                            window.location.href = "merchant.html"
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+        },
+        methods:{
+            goSubmit(){
+                var post_data = {
+                    method: 'save.Merchant.info',
+                    nonce: 'save.Merchant.info',
+                    merchant_id: this.merchant_id,
+                    token: this.token,
+                };
+                var _self = this;
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200){
+                            _self.$dialog.alert({
+                                title: '已上传信息',
+                                message: '请耐心等待，审核需2-3工作日'
+                            }).then(() => {
+                                window.location.href = "merchant.html"
+                            });
+
+                        }else{
+                            _self.$dialog.alert({
+                                message: data.msg
+                            }).then(() => {
+
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+
+            },
+            goLease(){
+                window.location.href =  'lease.html';
+
+            },
+
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .init-background {
+            background-color: #f7f7f7;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app" class="init-app init-background" v-cloak>
+    <div>
+        <van-nav-bar title="公告通知" fixed
+                     left-arrow
+                     @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div  style="padding: 2px 4vw;">
+        <div class="am-g am-padding-top-sm" style="width: 100%;text-align: center;">
+            <div class="am-u-sm-12  am-text-lg"v-if="!title" v-cloak>通知标题未知</div>
+            <div class="am-u-sm-12  am-text-lg" v-else="title" v-cloak><h2>{{title}}</h2></div>
+            <div class="am-u-sm-12 wis-font-gray am-text-center am-padding-vertical am-text-xs" >
+            <span v-if="!create_at" v-cloak>
+                通知时间未知
+            </span>
+                <span v-else v-cloak>
+                {{create_at}}
+            </span>
+
+            </div>
+
+
+            <div style="margin:10px 20px;">
+                <div class="am-u-sm-12 wis-font-gray am-text-center am-padding-vertical am-text-xs" >
+                    <h3>通知内容</h3>
+                </div>
+                <div class="am-u-sm-12 wis-text" v-if="!content" v-cloak>
+                    内容未知
+                </div>
+                <div class="am-u-sm-12 wis-text" v-html='content' v-else v-cloak>
+                    {{content}}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+    //活动内容
+
+    var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                create_at:'',
+                content:'',
+                notify_id: '',
+                title:''
+            };
+        },
+        mounted () {
+            var _self =this ;
+            let post_data = {
+                id: data_id,
+                method: 'notify.get.one',
+                nonce: 'notify.get.one',
+
+            };
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        _self.items = data.data;
+                        _self.create_at = data.data.create_at;
+                        _self.content = data.data.content;
+                        _self.title = data.data.title;
+                    }
+
+                }).catch(function (error) {
+                console.log(error);
+            });
+            this.onRead();
+        },
+        methods: {
+            onRead() {
+                let post_data = {
+                    method: 'notify.read',
+                    nonce: 'notify.read',
+                    merchant_id: obj.data.id,
+                    token: obj.data.api_token,
+                    notify_id: data_id
+                }
+                axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                    if (response.data.code == '200') {
+                        return true;
+                    }else {
+                        if(response.data.code == '005') {
+                            this.login_check = false;
+                            window.localStorage.removeItem('HC.merchant');
+                            this.$dialog.confirm({
+                                title: '请重新登录',
+                                message: response.data.msg
+                            }).then(() => {
+                                window.location.href = 'login.html';
+                            }).catch(() => {
+                                window.location.href = '../index.html';
+                            });
+                        }
+                    }
+                }).catch(error => {
+                    console.log(error);
+                });
+            },
+            onClickLeft(){
+                location.href="./notify_list.html"
+            }
+
+        }
+    });
+</script>
+
+</body>
+</html>

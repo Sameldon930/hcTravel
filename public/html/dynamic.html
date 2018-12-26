@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .list_total{
+            width: 100vw;
+            display: flex;
+            border-bottom:1px solid #e3e3e3;
+        }
+        .list_left{
+            width:64vw;
+            padding:0.5rem;
+            padding-right: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .list_title{
+            width:100%;
+            font-size: 1.1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-break: break-all;
+        }
+        .list_now{
+            display: flex;
+            width:100%;
+            font-size: 0.9rem;
+            color: #a1a1a1;
+            justify-content: space-between;
+        }
+        .list_img{
+            padding: 0.5rem;
+            width:7rem;
+            height: 5rem;
+            justify-content: center;
+        }
+        .list_null{
+            display:flex;
+            width:100%;
+            margin: 1rem auto;
+            background-color:#fff;
+            height: 10vh;
+            justify-content: center;
+            border-radius: 40px;
+        }
+        .list_null_word{
+            display: flex;
+            margin: auto;
+            font-size: 1.5em;
+            color: #ff0000;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar fixed
+                     title="黄厝资讯"
+                     left-arrow
+                     @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+    <div v-show="silly">
+        <div class="list_null" v-if="items == ''||items==null"
+             v-cloak>
+            <div class="list_null_word">暂无资讯</div>
+        </div>
+        <div  v-for="item in items">
+            <a :href="'dynamic_list.html?id='+item.id">
+                <div class="list_total"  >
+                    <div class="list_left" >
+                        <div class="list_title"  >
+                            {{item.title}}
+                        </div>
+                        <div class="list_now" >
+                            {{item.now}}
+                        </div>
+                    </div>
+                        <img  class="list_img"
+                              :src="'../storage/serve/'+item.thumbnail"
+                              alt="">
+                </div>
+            </a>
+        </div>
+    </div>
+
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+    var data_id = GetQueryString("group_id");
+    var post_data = {
+        group_id: data_id,
+        method: 'article.get.list',
+        nonce: 'article.get.list',
+
+    };
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                silly:false,
+
+            };
+        },
+        mounted () {
+            var _self =this ;
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        _self.items = data.data;
+                        _self.silly = true;
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+        },
+        methods: {
+
+            onClickLeft(){
+                location.href="../index.html"
+            }
+
+        }
+    });
+
+
+</script>
+
+</body>
+</html>

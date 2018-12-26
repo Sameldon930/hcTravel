@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+
+    <title>智慧黄厝</title>
+    <style>
+        .padding-fixed {
+            padding-top: 1em;
+        }
+        .van-cell__value{
+            font-size: 0.8em;
+            color:#4b0;
+        }
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <header class="hc-header">
+        <van-row style="width: 100%">
+            <a href="hall.html"><van-col span="4"><van-nav-bar left-arrow/></van-col></a>
+            <van-col span="16">民宿核验</van-col>
+            <van-col span="4"></van-col>
+        </van-row>
+    </header>
+    <div class="fixed_nav_bar"></div>
+
+    <van-cell-group>
+        <van-cell  @click="gomMerchantShop" title="商家信息" is-link  :value="merchant_status"/>
+    </van-cell-group>
+    <van-cell-group>
+        <a href="property_class.html">
+            <van-cell  title="产权证明" is-link   :value="property_status"/>
+        </a>
+    </van-cell-group>
+    <van-cell-group>
+        <a href="alibi.html">
+            <van-cell  title="无犯罪证明" is-link :value="alibi_status" />
+        </a>
+    </van-cell-group>
+    <van-cell-group>
+        <van-cell @click = "goBusiness" title="营业执照" is-link :value="business_status"/>
+    </van-cell-group>
+    <van-cell-group>
+        <van-cell @click = "goIdentity" title="法人身份证" is-link :value="identity_status"/>
+    </van-cell-group>
+    <van-cell-group>
+        <van-cell  title="租赁合同" is-link @click = "goLease" :value="lease_status"/>
+    </van-cell-group>
+
+    <div style="text-align: center;font-size: 0.8em;padding-top: 1em;color: #c6c6c6;">
+        <a href="homestay_process.html" ><van-icon name="info-o"/> 民宿核验流程说明</a>
+    </div>
+
+    <div class="hc-submit-dev padding-fixed">
+        <van-button size="large"  type="primary" @click="goSubmit">确认并申请验证</van-button>
+    </div>
+
+</div>
+
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                can_merchant:true,
+                msg:'',
+                check_submit:1,
+                login_check: false,
+                merchant_id: false,
+                token : '',
+                merchant_status:'',
+                property_status:'',
+                alibi_status:'',
+                identity_status:'',
+                business_status:'',
+                lease_status:'',
+            };
+        },
+        mounted (){
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登陆',
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.history.go(-1);
+                });
+            } else {
+                console.log(this.can_merchant);
+                this.token = obj.data.token;
+                this.merchant_id = obj.data.id;
+                this.login_check = true;
+                var post_data = {
+                    method: 'get.verify.status',
+                    nonce: 'get.verify.status',
+                    token: this.token,
+                    merchant_id: this.merchant_id,
+                };
+                var _self = this
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        if(response.data.code == 200 ){
+                            var data = response.data.data;
+                            _self.check_submit = data.check_submit;
+                            //获取民宿认证状态
+                            if( data.dorm == 2 || data.dorm == 3){
+                                _self.$dialog.alert({
+                                    title: data.dorm_msg
+                                }).then(() => {
+                                    window.location.href = "hall.html"
+                                })
+                            }
+                            if( data.merchant == 2 ){
+                                _self.$dialog.alert({
+                                    title: data.merchant_msg
+                                }).then(() => {
+                                    window.location.href = "hall.html"
+                                })
+                            }
+                            //获取民宿信息
+                            var dorm = data.merchant_data.homestay_info;
+                            if(dorm){
+                                if(dorm.merchant_name){
+                                    _self.merchant_status='已录入';
+                                }
+                                if(
+                                    dorm.property_img||dorm.property_img_1||dorm.property_img_2||dorm.property_img_3||dorm.property_img_4
+                                    ||dorm.property_img_5||dorm.property_img_6||dorm.property_img_7
+                                ){
+                                    _self.property_status='已录入';
+                                }
+                                if(dorm.alibi_img){
+                                    _self.alibi_status='已录入';
+                                }
+                                if(dorm.business_img){
+                                    _self.business_status='已录入';
+                                }
+                                if(dorm.identity_contrary){
+                                    _self.identity_status='已录入';
+                                }
+                                if(dorm.contract_tenancy){
+                                    _self.lease_status='已录入';
+                                }
+                            }
+
+                            if(data.merchant == 3){
+                                _self.msg = data.merchant_msg
+                                _self.can_merchant = false
+                            }
+                        }else{
+                            _self.$dialog.alert({
+                                message:  response.data.msg
+                            }).then(() => {
+                                window.location.href = "hall.html"
+                            });
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            }
+
+        },
+        methods:{
+            goSubmit(){
+              var post_data = {
+                  method: 'save.homestay.info',
+                  nonce: 'save.homestay.info',
+                  merchant_id: this.merchant_id,
+                  token: this.token,
+              };
+              var _self = this;
+              axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                  .then(function (response) {
+                      var data = response.data;
+                      if(data.code == 200){
+                          _self.$dialog.alert({
+                              title: '已上传信息',
+                              message: '民宿申请核验材料初审中，请耐心等待，审核需2-3个工作日'
+                          }).then(() => {
+                              window.location.href = "../index.html"
+                          });
+                      }else{
+                          _self.$dialog.alert({
+                              message: data.msg
+                          }).then(() => {
+
+                          });
+                      }
+                  })
+                  .catch(function (error) {
+                      console.log(error);
+                  })
+          },
+            goLease(){
+                if(this.can_merchant){
+                    window.location.href =  'lease.html';
+                }else{
+                    this.$dialog.alert({
+                        title: this.msg
+                    }).then(() => {
+
+                    })
+                }
+          },
+            goBusiness(){
+                if(this.can_merchant){
+                    window.location.href = 'business.html';
+                }else{
+                    this.$dialog.alert({
+                        title: this.msg
+                    }).then(() => {
+
+                    })
+                }
+            },
+            gomMerchantShop(){
+                if(this.can_merchant){
+                    window.location.href = 'merchant_shop.html';
+                }else{
+                    this.$dialog.alert({
+                        title: this.msg,
+                    }).then(() => {
+
+                    })
+                }
+            },
+            goIdentity(){
+                if(this.can_merchant){
+                    window.location.href = 'identity.html';
+                }else{
+                    this.$dialog.alert({
+                        title: this.msg
+                    }).then(() => {
+
+                    })
+                }
+            },
+        },
+
+
+    })
+</script>
+</body>
+</html>

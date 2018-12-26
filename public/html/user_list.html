@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        .hc-swipe {
+            height: 30vh;
+        }
+        .icon-container {
+            display:flex;
+            justify-content:space-around;
+            width: 100%;
+            align-items:center;
+            background-color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .icon-title {
+            line-height: 7vh;margin: 6px
+        }
+        .index-content {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .good-message > div{
+            padding: 2vw 3vw;
+            background: #ffffff;
+        }
+        .list-name{
+            width: 60%;
+            float: left;
+        }
+        .more{
+            width: 30%;
+            float: right;
+            text-align: right;
+        }
+        .clear-both:after{
+            clear: both;
+        }
+        .head-portrait{
+            width: 60px;
+            height: 60px;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+        .user-sm-list{
+            height: 93px;
+            padding: 2%;
+        }
+        .font-size14px{
+            font-size:14px;
+        }
+        .font-size10px{
+            font-size:10px;
+        }
+        .color-66{
+            color: #666666;
+        }
+        .color-red{
+            color: red;
+        }
+        .ma-t-5{
+            margin-top: 5%;
+        }
+
+        .ma-t-2{
+            margin-top: 2%;
+        }
+        .pa-l-0{
+            padding-left: 0;
+        }
+        .pa-r-0{
+            padding-right: 0;
+        }
+        .pa-t-2{
+            padding-top: 2%;
+        }
+        .ma-r-10{
+            margin-right:10%;
+        }
+        .margin-bottom-10{
+            margin-bottom: 10%;
+        }
+        .text-align-right{
+            text-align: right;
+        }
+
+        .h-30{
+            height: 20px;
+        }
+        .form-fixed{
+            /*height: 80px;*/
+            width: 100%;
+            position: fixed;
+            top: 50px;
+            left: 0;
+            z-index: 5;
+            margin-top: -7px;
+        }
+        .margin-top-20{
+            margin-top: 20%;
+        }
+        .Load_msg{
+            width: 100%;
+            height: 70px;
+        }
+        @media screen and (max-width: 321px){
+            .xs-pa-l-15{
+                padding-left: 15px;
+            }
+            .margin-top-20{
+                margin-top: 24%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div v-if="!login_check" >
+        <van-nav-bar title="商户列表" fixed left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div v-else>
+        <van-nav-bar fixed title="商户列表" left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div class="good-message bg-white">
+       <div class=" form-fixed bg-white">
+           <form class="">
+               <input type="text" id="merchant_name" v-model="user_name" name="merchant_name" class="form-control" style="width: 74%;display: inline-block;"  placeholder="请输入商户名称">
+               <input type="button"  @click="sub_name" value="搜索" style="display: inline-block;margin-left: 5%" class="btn btn-default">
+           </form>
+       </div>
+    </div>
+    <div  class="good-message margin-bottom-10 margin-top-20 " id="user-list">
+        <div v-for="item in items" >
+            <a :href="'user_info.html?id='+item.id">
+                <div class="container-fluid">
+                    <div class="row user-sm-list ">
+                        <div class="col-xs-3 pa-t-2 ">
+                            <div class="head-portrait">
+                                <img v-if="item.thumbnail != null" :src="'../storage/serve/'+item.thumbnail" width="100%" height="100%" alt="商户头像">
+                                <img v-else src="../img/user_list/user_head_ portrait.jpg" width="100%" height="100%" alt="商户头像" >
+                                <!--<img  src="../img/user_list/user_head_ portrait.jpg" width="100%" height="100%" alt="商户头像" >-->
+                            </div>
+                        </div>
+                        <div class="col-xs-9  pa-t-2 xs-pa-l-15 pa-l-0 pa-r-0">
+                            <div class="row font-size14px">
+                                <div class="col-xs-7 font-size14px">
+                                    {{ (item.merchant_name == null || item.merchant_name == "" ) ? "暂无描述":item.merchant_name }}
+                                </div>
+                                <div class="col-xs-1"></div>
+                                <div v-if="item.score == null || item.score < 1 " class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★☆☆☆☆</div>
+                                <div v-if="item.score >=1  && item.score <2 " class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★☆☆☆☆</div>
+                                <div v-if="item.score >= 2 && item.score <3" class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★★☆☆☆</div>
+                                <div v-if="item.score >= 3 && item.score <4" class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★★★☆☆</div>
+                                <div v-if="item.score >= 4 && item.score <5" class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★★★★☆</div>
+                                <div v-if="item.score == 5 || item.score >5" class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★★★★★</div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-xs-3 font-size10px color-red pa-r-0">
+                                    <span v-if="item.score == null || item.score < 1 " style="font-weight: bold;font-size: 14px">1</span>
+                                    <span v-else-if="item.score > 5 " style="font-weight: bold;font-size: 14px">5</span>
+                                    <span v-else  style="font-weight: bold;font-size: 14px" > {{ item.score }}</span>分
+                                </div>
+                                <div class="col-xs-5  pa-t-2 font-size10px color-66 pa-l-0">
+                                    1000+人消费
+                                </div>
+                            </div>
+                            <div  class="row ">
+                                <div class="col-xs-12 font-size10px color-66 pa-t-2">{{(item.merchant_address  == null || item.merchant_address  == "" ) ? "暂无描述": item.merchant_address }}</div>
+                                <!--<div class="col-xs-1"></div>-->
+                                <!--<div class="col-xs-4 text-align-right pa-r-0" style="display: none">-->
+                                    <!--<i class="fa fa-map-marker fa-1x color-red"></i>-->
+                                    <!--<span class="font-size10px color-66">306m</span>-->
+                                <!--</div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <div style="border-bottom:1px solid #f5f5f5;"></div>
+        </div>
+        <div class="Load_msg" v-on:click="load" style="text-align: center;padding-bottom: 10%"><a style="color: #1a1a1a;">点击加载更多</a></div>
+    </div>
+
+
+    <div>
+        <van-tabbar v-model="active">
+            <van-tabbar-item icon="wap-home" @click="onClickLeft" >首页</van-tabbar-item>
+            <van-tabbar-item icon="contact" @click="myMerchant">我的</van-tabbar-item>
+        </van-tabbar>
+    </div>
+
+</div>
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script>
+//    与列表接口交互
+
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+
+    var post_data = {
+        id: data_id,
+        method: 'merchant.get.details',
+        nonce: 'merchant.get.details',
+    };
+    var page_num = 0;
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                active: 0,
+                images: [],
+                login_check: false,
+                items:[],
+                user_name:"",
+                type:"",
+            };
+        },
+//        列表页搜索接口 getinput
+        methods: {
+            onClickLeft(){
+
+                window.history.go(-1)
+                console.log(history.length)
+            },
+            myMerchant () {
+                location.href="./merchant.html"
+            },
+            load:function (event){
+                page_num+=12
+                let post_data = {
+                    method: 'merchant.get.list',
+                    nonce: 'merchant.get.list',
+                    type: this.type,
+                    page_num:page_num,
+                    MerchantSize:this.MerchantSize
+                };
+                var MerchantSize= this.items.length
+                // console.log(MerchantSize);
+                var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+                if (obj == null) {
+                    this.login_check = false;
+                } else {
+                    this.login_check = true;
+                }
+
+                axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                    if (response.data.code == 200) {
+                        var datas = response.data.data;
+                        var count = response.data.count;
+                        // console.log(datas);
+                        // console.log(count);
+                        datas.forEach((data) => {
+                            this.items.push(data);
+                        });
+                        if (MerchantSize>=count){
+                            this.$toast('没有更多数据了');
+                            $('.Load_msg').hide()
+
+                        }
+                    }else {
+                        this.$toast(response.data.msg);
+                    }
+                }).catch(error => {
+//                console.log(error);
+                });
+            },
+            sub_name(){
+//                var new_name= this.new_name.replace(/\s/g,"");
+//                console.log(new_name);
+                 post_data = {
+                    method: 'merchant.get.query',
+                    nonce: 'merchant.get.query',
+                    user_name:this.user_name,
+                };
+
+                var this_ = this;
+                axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                    if (response.data.code == 202) {
+                        this.$toast('msg');
+                    }
+                    if (response.data.code == 200) {
+                        var datas = response.data.data;
+                        // console.log(datas);
+                        this_.items=[];
+                        datas.forEach((data) => {
+                            this_.items.push(data);
+                            $('.Load_msg').hide()
+                        });
+                        if (datas.length==0){
+                            this.$toast('内容不存在');
+                            $('.Load_msg').hide();
+                            function g()
+                            {
+                                location.href="../html/user_list.html"
+                            }
+                            setInterval(g,600);
+                        }
+                    }else {
+                        this.$toast(response.data.msg);
+//                        location.href="../html/user_list.html"
+                    }
+                }).catch(error => {
+//                console.log(error);
+                });
+            }
+
+        },
+//        列表页列表接口MerchantGetList.php
+        mounted() {
+            // $("#user-list").children("div:last-child").addClass("margin-bottom-10");
+            let post_data = {
+                method: 'merchant.get.list',
+                nonce: 'merchant.get.list',
+                type: this.type,
+                page_num:page_num,
+            };
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+            } else {
+                this.login_check = true;
+            }
+            axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                if (response.data.code == 200) {
+                    var datas = response.data.data;
+                    // console.log(datas);
+                    datas.forEach((data) => {
+                        this.items.push(data);
+                    });
+                }else {
+                    this.$toast(response.data.msg);
+                }
+            }).catch(error => {
+//                console.log(error);
+            });
+        }
+
+    });
+//    $(function () {
+//        $('.Load_msg').click(function () {
+//
+//        })
+//    })
+
+</script>
+
+</body>
+</html>

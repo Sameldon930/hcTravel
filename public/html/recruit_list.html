@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .recruit_header{
+            width:100%;
+            display: flex;
+            justify-content: center;
+        }
+        .recruit_img{
+            width:150px;
+            height:150px;
+            border-radius:50%;
+            margin-top: 20px;
+        }
+        .recruit-container{
+            background: #fff;
+        }
+        .recruit-detail {
+            width: 100vw;
+        }
+        .recruit-detail img{
+            width: 100vw;
+            height: 64vw;
+        }
+        .recruit-message{
+            background: #fff;
+        }
+        .recruit-message > div{
+            padding: 1vw 3vw;
+        }
+        .recruit-price{
+            display: flex;
+            /*width: 100%;*/
+            justify-content: space-between;
+        }
+        .recruit-blank {
+            padding-top: 10px;
+        }
+        .recruit-description {
+            font-size: 0.9em;
+            padding-bottom: 30px;
+        }
+        .fix-blank {
+            padding-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div>
+        <van-nav-bar fixed title="求职招聘" left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div v-cloak>
+        <div class="am-g am-padding-top-sm" >
+            <div class="recruit_header" >
+                <img class="recruit_img"  src="../img/config/hall_bgi.jpg" alt="">
+            </div>
+            <br/>
+            <div >
+                <van-row >
+                    <van-col span="9" offset="5">
+                        <div class="am-u-sm-12  am-text-lg" v-if="!name" v-cloak>招聘姓名未知</div>
+                        <div class="am-u-sm-12  am-text-lg" else v-cloak>姓名：{{name}}</div>
+                    </van-col>
+                    <van-col span="10" >
+                        <div class="am-u-sm-12  am-text-lg" v-if="!sex" v-cloak>性别未知</div>
+                        <div class="am-u-sm-12  am-text-lg" else v-cloak>性别：{{sex}}</div>
+                    </van-col>
+                </van-row>
+                <br/>
+                <van-row>
+                    <van-col span="9" offset="5">
+                        <div class="am-u-sm-12  am-text-lg" v-if="!age" v-cloak>年龄未知</div>
+                        <div class="am-u-sm-12  am-text-lg" else v-cloak>年龄：{{age}}</div>
+                    </van-col>
+                    <van-col span="10" >
+                        <div class="am-u-sm-12  am-text-lg" v-if="!education" v-cloak>学历未知</div>
+                        <div class="am-u-sm-12  am-text-lg"  v-else v-cloak>学历：{{education}}</div>
+                    </van-col>
+                </van-row>
+                <br/>
+                <van-row>
+                    <van-col  offset="5">
+                        <div class="am-u-sm-12  am-text-lg" v-if="!work_experience" v-cloak>工作经验未知</div>
+                        <div class="am-u-sm-12  am-text-lg"  v-else v-cloak>工作经验：{{work_experience}}</div>
+                    </van-col>
+                </van-row>
+                <br/>
+                <van-row>
+                    <van-col  offset="5">
+                        <div class="am-u-sm-12  am-text-lg" v-if="!apply_position" v-cloak>求职意向未知</div>
+                        <div class="am-u-sm-12  am-text-lg"  v-else v-cloak>求职意向：{{apply_position}}</div>
+                    </van-col>
+                </van-row>
+
+            </div>
+        </div>
+    </div>
+    <div class="fix-blank"></div>
+    <div class="recruit-container">
+        <div class="recruit-message">
+
+            <div style="font-size: 0.8em;">
+                <div style="border-left: 3px solid #e51c23;">&nbsp;自我评价</div>
+            </div>
+            <div class="recruit-description" v-if="!evaluate" v-cloak>暂无</div>
+            <div class="recruit-description" v-html='evaluate' style="padding: 2px 20px;" v-else v-cloak>
+                {{evaluate}}</div>
+            <div class="fix-blank"></div>
+        </div>
+    </div>
+
+
+    <div class="fixed_tab_bar"></div>
+    <div style="bottom: 0px;position: fixed;width: 100vw;" v-cloak>
+        <van-row>
+            <van-col span="12">
+                <van-button bottom-action>
+                    <div>Tel:{{ mobile }}</div>
+                </van-button>
+            </van-col>
+            <van-col span="12">
+                <a @click="doMobile(mobile)">
+                    <van-button class="style-color" type="primary" bottom-action><van-icon name="phone" /></van-button>
+                </a>
+            </van-col>
+        </van-row>
+    </div>
+
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+    //活动内容
+    var post_data = {
+        id: data_id,
+        method: 'applicant.get.one',
+        nonce: 'applicant.get.one',
+
+    };
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                name:'',
+                age:'',
+                sex:'',
+                apply_position:'',
+                work_experience:'',
+                education:'',
+                evaluate:'',
+                mobile: '',
+                created_time:''
+            };
+        },
+        mounted () {
+            var _self =this ;
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        console.log(response.data.data.content)
+                        _self.items = data.data;
+                        _self.age = data.data.age;
+                        _self.name = data.data.name;
+                        _self.sex = data.data.sex;
+                        _self.apply_position = data.data.apply_position;
+                        _self.work_experience = data.data.work_experience;
+                        _self.created_time = data.data.created_time;
+                        _self.education = data.data.education;
+                        _self.evaluate = data.data.evaluate;
+                        _self.mobile = data.data.mobile;
+                    }
+
+                }).catch(function (error) {
+                    console.log(error);
+            });
+        },
+        methods: {
+            onClickLeft(){
+                location.href="/html/recruit.html"
+            },
+            doMobile(mobile) {
+                window.location.href = 'tel:' + mobile;
+                console.log(mobile);
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

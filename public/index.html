@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+     <link href="./css/app1.css" rel="stylesheet">
+    <link href="./css/hc.common.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        .hc-swipe {
+            height: 30vh;
+        }
+        .icon-container {
+            display:flex;
+            justify-content:space-around;
+            width: 100%;
+            align-items:center;
+            background-color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .icon-title {
+            line-height: 7vh;margin: 6px
+        }
+        .index-content {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .good-message > div{
+            padding: 2vw 3vw;
+            background: #ffffff;
+        }
+        .list-name{
+            width: 60%;
+            float: left;
+        }
+        .more{
+            width: 30%;
+            float: right;
+            text-align: right;
+        }
+        .clear-both:after{
+            clear: both;
+        }
+        .head-portrait{
+            width: 60px;
+            height: 60px;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+        .user-sm-list{
+            height: 93px;
+            padding: 2%;
+        }
+        .font-size14px{
+            font-size:14px;
+        }
+        .font-size10px{
+            font-size:10px;
+        }
+        .color-66{
+            color: #666666;
+        }
+        .color-red{
+            color: red;
+        }
+        .ma-t-5{
+             margin-top: 5%;
+        }
+        .pa-l-0{
+            padding-left: 0;
+        }
+        .pa-r-0{
+            padding-right: 0;
+        }
+        .pa-t-2{
+            padding-top: 2%;
+        }
+        .ma-r-10{
+            margin-right:10%;
+        }
+        .margin-bottom-10{
+            margin-bottom: 10%;
+        }
+        .text-align-right{
+            text-align: right;
+        }
+        .ma-b--10{
+            margin-bottom: -10px;
+        }
+        .ma-t-2{
+            margin-top: 2%;
+        }
+        @media screen and (max-width:415px ){
+            .xs-pa-r-0{
+                padding-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div v-if="!login_check">
+        <van-nav-bar title="智慧黄厝" fixed right-text="登录" @click-right="onClickRight"/>
+    </div>
+    <div v-else>
+        <van-nav-bar fixed title="智慧黄厝"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+    <div>
+        <van-swipe :autoplay="3000" class="hc-swipe">
+            <van-swipe-item v-for="(image, index) in images" :key="index">
+                <img :src="image" style="width: 100%;height: 100%;"/>
+            </van-swipe-item>
+        </van-swipe>
+    </div>
+    <div style="margin: 20px auto;">
+        <van-row gutter="15" style="margin: 12px 5px;">
+            <a href="./html/dynamic.html?group_id=1">
+                <van-col span="12">
+                    <div class="icon-container" style="border-left: 6px solid #974578;">
+                        <div class="icon-title">黄厝资讯</div>
+                        <svg width="2.7em" height="2.7em" viewBox="0 0 0.0836542 0.0836542">
+                            <circle style="fill:#974578;" cx="0.0418271" cy="0.0418271" r="0.0418271"/>
+                            <path style="fill:white;" d="M0.0256223 0.0212968l0.0326268 0c0.000991238,0 0.00180029,0.000808514 0.00180029,0.00180029l0 0.0356484c0,0.00143323 -0.000782641,0.00266001 -0.00208219,0.00326478 -0.00130063,0.000604229 -0.00274248,0.000411803 -0.00383882,-0.000512059l-0.0123244 -0.0103867 -0.0122797 0.0103403c-0.00109904,0.00092494 -0.00254628,0.00111521 -0.00384745,0.00050559 -0.00130171,-0.000610158 -0.00208057,-0.00184503 -0.00207195,-0.00328203l0.000217221 -0.0355892c5.39009e-006,-0.000988004 0.000812287,-0.00178951 0.00180029,-0.00178951z"/>
+                        </svg>
+                    </div>
+                </van-col>
+            </a>
+            <a href="./html/notice.html?group_id=2">
+                <van-col span="12">
+                    <div class="icon-container" style="border-left: 6px solid #e77817;">
+                        <div class="icon-title">公告通知</div>
+                        <svg width="2.7em" height="2.7em" viewBox="0 0 0.0823679 0.0823679">
+                            <circle style="fill:#E77817;" cx="0.041184" cy="0.041184" r="0.041184"/>
+                            <path style="fill:white;" d="M0.0391624 0.0219469c0,0 -6.31558e-005,-0.00329259 0.00223752,-0.00325863 0.00195518,2.86589e-005 0.00218498,0.00183683 0.00226512,0.00325863 0,0 0.00828456,0.00036036 0.00954502,0.00657351 0.00126099,0.00621368 9.02226e-005,0.0117066 0.00153113,0.0153989 0.00144038,0.0036917 0.00558319,0.00765406 0.0072937,0.00972546 0.00171104,0.00207087 -0.00108692,0.00301662 -0.00108692,0.00301662l-0.0131905 0c0,0 -0.000225556,0.00719923 -0.00614363,0.00701826 -0.00591807,-0.000180445 -0.00664091,-0.00688292 -0.00664091,-0.00688292l-0.0137303 0c0,0 -0.0025671,-0.000766892 -0.000899042,-0.00301874 0,0 0.00621209,-0.00544626 0.00729264,-0.0101288 0.00108055,-0.00468255 -2.01674e-005,-0.0116313 0.00155607,-0.0149233 0.00157624,-0.00329206 0.00456739,-0.00650876 0.00997013,-0.0067789z"/>
+                        </svg>
+                    </div>
+                </van-col>
+            </a>
+        </van-row>
+        <van-row gutter="15" style="margin: 4px 5px;">
+            <a href="./html/policy.html?group_id=3">
+                <van-col span="12">
+                    <div class="icon-container" style="border-left: 6px solid #00923f;">
+                        <div class="icon-title">政府政策</div>
+                        <svg width="2.7em" height="2.7em" viewBox="0 0 0.0787359 0.0787359">
+                            <circle style="fill:#00923F;" cx="0.039368" cy="0.039368" r="0.039368"/>
+                            <path style="fill:white;" d="M0.0233803 0.0577862c0,0 0.0336824,0 0.0336987,0 1.67415e-005,0 0.00401594,-0.00137281 0.00397687,-0.00397637l0 -0.0217082c0,0 -0.00086092,-0.00389012 -0.00418335,-0.00418335l-0.0190752 0c0,0 6.08783e-006,-0.00714153 -0.0057809,-0.00696854l-0.0090247 0c0,0 -0.00513914,-0.000129366 -0.00531163,0.00567081l0 0.0259671c0,0 0.000444412,0.00498847 0.00570024,0.0051985z"/>
+                        </svg>
+                    </div>
+                </van-col>
+            </a>
+            <a href="./html/hall.html">
+                <van-col span="12">
+                    <div class="icon-container" style="border-left: 6px solid #0093dd;">
+                        <div class="icon-title">办事大厅</div>
+                        <svg width="2.7em" height="2.7em" viewBox="0 0 0.0811206 0.0811206">
+                            <circle style="fill:#0093DD;" cx="0.0405603" cy="0.0405603" r="0.0405603"/>
+                            <path style="fill:white;" d="M0.0304803 0.0185365l-0.0137466 0.0355629c0,0 0.000266046,0.00807077 0.00674001,0.00824796 0,0 0.0273155,0 0.0273155,0 0,0 0.0034424,0.000162555 0.00505488,-0.0038135l0.008514 -0.0274043c0,0 0.000354903,-0.00230556 -0.00141909,-0.00328089 -0.00177347,-0.000975851 -0.0022167,0.000886472 -0.0022167,0.000886472l-0.00842567 0.0294438c0,0 -0.0291773,0 -0.0291773,0 0,0 -0.00243153,-0.000321973 -0.00287529,-0.00298244 0,0 0.0282391,0.000144784 0.0282391,-0.000298975 0,-0.000443236 0.0112633,-0.0322815 0.0112633,-0.0322815 0,0 0.000356471,-0.00386211 -0.00257161,-0.00405969l-0.0266945 -1.9862e-005zm0.00151213 0.012131l0.0150021 0c0.00073019,0 0.00132762,0.000597428 0.00132762,0.00132762l0 0c0,0.00073019 -0.000597428,0.00132762 -0.00132762,0.00132762l-0.0150021 0c-0.00073019,0 -0.00132762,-0.000597428 -0.00132762,-0.00132762l0 0c0,-0.00073019 0.000597428,-0.00132762 0.00132762,-0.00132762zm0.00326364 -0.00580807l0.0150021 0c0.00073019,0 0.00132762,0.000597428 0.00132762,0.00132762l0 0c0,0.00073019 -0.000597428,0.00132762 -0.00132762,0.00132762l-0.0150021 0c-0.00073019,0 -0.00132762,-0.000597428 -0.00132762,-0.00132762l0 0c0,-0.00073019 0.000597428,-0.00132762 0.00132762,-0.00132762z"/>
+                        </svg>
+                    </div>
+                </van-col>
+            </a>
+        </van-row>
+    </div>
+    <div class="good-message " >
+        <div >
+            <div style="border-left: 3px solid #e51c23;color: #101010">&nbsp;常用服务</div>
+            <div style="border-bottom:1px solid #bbbbbb;margin-top: 7px"></div>
+        </div>
+    </div>
+
+    <div style="padding:10px 3px;background-color: #fff;margin: 0px 0;margin-bottom: 20px">
+        <van-row gutter="20">
+            <a href="./html/service.html">
+                <van-col span="8">
+                    <div class="index-content">
+                        <svg width="2.7em" height="2.7em" viewBox="0 0 0.0764875 0.0764875">
+                          <circle style="fill:#F9C953" cx="0.0382437" cy="0.0382437" r="0.0382437"/>
+                           <path id="_145145768" style="fill:white;" d="M0.0377637 0.017122c-0.0042901,0.003231 -0.0199109,0.0155193 -0.0199109,0.0155193l0.019941 0.0156114c0.00061259,0.000479525 0.00145237,0.000471147 0.0020556,-2.11918e-005l0.0180958 -0.0147692c0.000404615,-0.000329704 0.000614068,-0.000783109 0.000605197,-0.00130502 -9.3638e-006,-0.000521909 -0.000236066,-0.000966936 -0.000652016,-0.00128235l-0.018151 -0.013749c-0.000594355,-0.000451434 -0.00138683,-0.000452419 -0.00198365,-3.94265e-006z"/>
+                           <path id="_145145696" style="fill:white;" d="M0.0210419 0.0419227l-0.00161008 0.00115421c-0.000441084,0.000316398 -0.000682572,0.000782124 -0.000687007,0.00132522 -3.94265e-006,0.0005431 0.000230645,0.00101277 0.000667294,0.00133557l0.0184225 0.0136362c0.000601255,0.000444041 0.00139471,0.000436156 0.00198611,-2.06989e-005l0.0181742 -0.0140477c0.00043517,-0.000335618 0.000659901,-0.000817608 0.000638217,-0.00136662 -2.11918e-005,-0.000549507 -0.000283378,-0.00101228 -0.00074319,-0.0013129l-0.00168351 -0.00110197c-0.000597805,-0.000391308 -0.00134346,-0.000362231 -0.00190874,7.54032e-005l-0.0147164 0.0113874c-0.000596326,0.00046129 -0.00140013,0.000465233 -0.00200139,9.85663e-006l-0.0145849 -0.0110478c-0.000584498,-0.000443056 -0.00135726,-0.000453405 -0.00195309,-2.61201e-005z"/>
+                        </svg>
+                        <div style="padding-top: 4px;">企业服务</div>
+                    </div>
+                </van-col>
+            </a>
+            <a href="./html/recruit.html">
+                <van-col span="8">
+                    <div class="index-content">
+                        <svg width="2.7em" height="2.7em" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 0.0775954 0.0775954">
+                            <circle style="fill:#65E861;" cx="0.0387977" cy="0.0387977" r="0.0387977"/>
+                            <path style="fill:white" d="M0.016718 0.0555747c0,-0.00467972 0,-0.016492 0,-0.016492l0.00766105 -0.0181079c0.000290483,-0.000685959 0.000926945,-0.00110743 0.0016719,-0.00110743l0.025333 0c0.000732957,0 0.00136042,0.000406476 0.0016584,0.00107644l0.00767755 0.017232c0.000108494,0.000243486 0.000156991,0.000471972 0.000156991,0.000738956l0 0.016999c0,0.00050247 -0.000179989,0.000934445 -0.000536968,0.00128842 -0.000356979,0.000353979 -0.000790453,0.000530469 -0.00129292,0.000526469l-0.0405286 -0.00033898c-0.000994441,-7.99953e-006 -0.00179989,-0.000820451 -0.00180039,-0.00181489zm0.0132077 -0.0299797l0.0179214 0c0.000745956,0 0.00138342,0.000422975 0.0016724,0.00111043l0.00438424 0.0104124c0.000242986,0.000577466 0.000185489,0.00118593 -0.00016099,0.0017079 -0.000346479,0.000521969 -0.000885448,0.000810952 -0.00151191,0.000810952l-0.0050632 0c-0.000780954,0 -0.00144541,0.000468472 -0.0017089,0.00120393l-0.00151891 0.00424475c-0.000263484,0.000734956 -0.000927945,0.00120293 -0.0017089,0.00120293l-0.0067491 0c-0.000666461,0 -0.00123843,-0.00032998 -0.00157141,-0.000906946l-0.00267084 -0.00462573c-0.00033298,-0.000576966 -0.000905446,-0.000907946 -0.00157191,-0.000907946l-0.00428625 0c-0.000628463,0 -0.00116893,-0.000290483 -0.00151491,-0.000814952 -0.000346479,-0.000524469 -0.000400976,-0.00113543 -0.000153991,-0.0017134l0.00454423 -0.0106234c0.000291983,-0.00068246 0.000926445,-0.00110093 0.0016689,-0.00110093z"/>
+                        </svg>
+                        <div style="padding-top: 4px;">求职招聘</div>
+                    </div>
+                </van-col>
+            </a>
+            <a href="./html/rent.html">
+                <van-col span="8">
+                    <div class="index-content">
+                        <svg width="2.7em" height="2.7em" viewBox="0 0 0.0799105 0.0799105">
+                            <circle style="fill:#0093DD;" cx="0.0399552" cy="0.0399552" r="0.0399552"/>
+                            <path style="fill:white;" d="M0.020268 0.0218189l-0.000300694 0.0145646c-9.78285e-006,0.000486053 0.000159615,0.000908261 0.00050356,0.00125169l0.0216376 0.0216376c0.000669868,0.000669868 0.00176246,0.000669868 0.00243233,0l0.0149003 -0.0148998c0.000669353,-0.000669353 0.000669353,-0.00176194 0,-0.00243181l-0.0213024 -0.0213024c-0.000335191,-0.000335191 -0.000742467,-0.000504074 -0.00121616,-0.000504074l-0.0149353 0c-0.000935035,0 -0.00169964,0.000749676 -0.00171921,0.0016842zm0.00791278 0.00321804c0.0019334,0 0.00350123,0.00156783 0.00350123,0.00350123 0,0.0019334 -0.00156783,0.00350123 -0.00350123,0.00350123 -0.0019334,0 -0.00350123,-0.00156783 -0.00350123,-0.00350123 0,-0.0019334 0.00156783,-0.00350123 0.00350123,-0.00350123z"/>
+                        </svg>
+                        <div style="padding-top: 4px;">商铺招租</div>
+                    </div>
+                </van-col>
+            </a>
+        </van-row>
+    </div>
+
+    <div class="good-message">
+        <div>
+            <div class="list-name" style="border-left: 3px solid #e51c23; color: #101010">&nbsp;商户列表</div>
+            <div class="more">
+                <a href="html/user_list.html" style="color: #666666;font-size: 12px">
+                    查看更多 <i class="fa fa-angle-right" style="font-size: 14px"></i>
+                </a>
+            </div>
+            <div  style="border-bottom:1px solid #bbbbbb;margin-top:27px;"></div>
+        </div>
+    </div>
+
+    <div class="good-message margin-bottom-10">
+        <div v-for="item in items">
+             <a :href="'./html/user_info.html?id='+item.id">
+                 <div class="container-fluid">
+                     <div class="row user-sm-list ">
+                         <div class="col-xs-3 pa-t-2 pa-l-0 xs-pa-r-0">
+                             <div class="head-portrait ">
+                                 <img v-if="item.thumbnail != null" :src="'./storage/serve/'+item.thumbnail" width="100%" height="100%" alt="商户头像">
+                                 <img v-else src="./img/user_list/user_head_ portrait.jpg" width="100%" height="100%" alt="商户头像" >
+                             </div>
+                         </div>
+                         <div class="col-xs-9  pa-t-2 pa-l-0 pa-r-0 ">
+                             <div class="row font-size14px ">
+                                 <div class="col-xs-7 font-size14px">
+                                     {{ (item.merchant_name == null || item.merchant_name == "" ) ? "暂无描述":item.merchant_name }}
+                                 </div>
+                                 <div class="col-xs-1"></div>
+                                 <div v-if="item.score == null || item.score < 1 " class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★☆☆☆☆</div>
+                                 <div v-if="item.score >=1  && item.score <2 " class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★☆☆☆☆</div>
+                                 <div v-if="item.score >= 2 && item.score <3" class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★★☆☆☆</div>
+                                 <div v-if="item.score >= 3 && item.score <4" class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★★★☆☆</div>
+                                 <div v-if="item.score >= 4 && item.score <5" class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★★★★☆</div>
+                                 <div v-if="item.score == 5 || item.score >5" class="col-xs-4 text-align-right pa-r-0"style="color: #f9c953;">★★★★★</div>
+                             </div>
+                             <div class="row  ">
+                                 <div class="col-xs-3 font-size10px color-red pa-r-0">
+                                     <span v-if="item.score == null || item.score < 1 " style="font-weight: bold;font-size: 14px">1</span>
+                                     <span v-else-if="item.score > 5 " style="font-weight: bold;font-size: 14px">5</span>
+                                     <span v-else  style="font-weight: bold;font-size: 14px" > {{ item.score }}</span>分
+                                 </div>
+                                 <div class="col-xs-5 font-size10px color-66 pa-t-2 pa-l-0">
+                                     1000+人消费
+                                 </div>
+                             </div>
+                             <div  class="row">
+                                 <div class="col-xs-12 font-size10px color-66 pa-t-2 ">{{(item.merchant_address  == null || item.merchant_address  == "" ) ? "暂无描述": item.merchant_address }}</div>
+                                 <!--<div class="col-xs-1"></div>-->
+                                 <!--<div class="col-xs-4 text-align-right pa-r-0"style="display: none">-->
+                                     <!--<i class="fa fa-map-marker fa-1x color-red"></i>-->
+                                     <!--<span class="font-size10px color-66">306m</span>-->
+                                 <!--</div>-->
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </a>
+             <div style="border-bottom:1px solid #bbbbbb;"></div>
+         </div>
+    </div>
+
+    <div>
+        <van-tabbar v-model="active">
+            <van-tabbar-item icon="wap-home" >首页</van-tabbar-item>
+            <van-tabbar-item icon="contact" @click="myMerchant">我的</van-tabbar-item>
+        </van-tabbar>
+    </div>
+
+</div>
+
+<script src="./js/app1.js"></script>
+<script src="./js/hc.common.js"></script>
+<script src="./js/jquery.min.js"></script>
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+    //    console.log('11111'+data_id);
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                images: [],
+                login_check: false,
+                active: 0,
+                items:[],
+                type:1,
+            };
+        },
+        methods: {
+            onClickRight(){
+                location.href="./html/login.html"
+            },
+            myMerchant () {
+                location.href="./html/merchant.html"
+            }
+        },
+        mounted() {
+            var post_data = {
+                method: 'swipe.get.list',
+                nonce: 'swipe.get.list',
+        };
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+            } else {
+                this.login_check = true;
+            }
+            axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                if (response.data.code == 200) {
+                    var datas = response.data.data;
+                    datas.forEach((item) => {
+                        this.images.push(item.image);
+//                        console.log(item.image);
+                    });
+                }else {
+                    this.$toast(response.data.msg);
+                }
+            }).catch(error => {
+                // console.log(error);
+            });
+            let post_data2 = {
+                method: 'merchant.get.list',
+                type: this.type,
+                nonce: 'merchant.get.list',
+            };
+            var obj1 = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj1 == null) {
+                this.login_check = false;
+            } else {
+                this.login_check = true;
+            }
+            axios.post('/api/v1',api_data_sign(post_data2, 'hc')).then(response => {
+                if (response.data.code == 200) {
+                    var datas = response.data.data;
+                    datas.forEach((data) => {
+                        this.items.push(data);
+                    });
+                }else {
+                    this.$toast(response.data.msg);
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+
+        },
+//        mounted() {
+//            // $("#user-list").children("div:last-child").addClass("margin-bottom-10");
+//            let post_data = {
+//                method: 'index.list',
+//                nonce: 'index.list',
+//            };
+//            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+//            if (obj == null) {
+//                this.login_check = false;
+//            } else {
+//                this.login_check = true;
+//            }
+//            axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+//                if (response.data.code == 200) {
+//                    var datas = response.data.data;
+//                    datas.forEach((data) => {
+//                        this.items.push(data);
+//                    });
+//                }else {
+//                    this.$toast(response.data.msg);
+//                }
+//            }).catch(error => {
+//                console.log(error);
+//            });
+//        }
+
+    });
+
+
+</script>
+
+</body>
+</html>

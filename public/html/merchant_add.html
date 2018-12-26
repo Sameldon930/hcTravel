@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <title>身份证</title>
+</head>
+<body >
+<div id="app" class="hc-body-gray" v-cloak>
+    <header class="hc-header" >
+        <van-row style="width: 100%">
+            <a href="javascript:history.go(-1)"><van-col span="4"> <van-nav-bar left-arrow/></van-col></a>
+            <van-col span="16">营业执照信息</van-col>
+            <van-col span="4"></van-col>
+        </van-row>
+    </header>
+    <div class="fixed_nav_bar"></div>
+
+    <van-cell-group>
+        <van-field
+                v-model="name"
+                label="昵称:"
+                required
+                placeholder="请输入昵称"
+        />
+    </van-cell-group>
+    <van-cell-group>
+        <van-field
+                v-model="merchant_name"
+                label="店铺名:"
+                required
+                placeholder="请输入店铺名"
+        />
+    </van-cell-group>
+    <van-cell-group>
+        <van-field
+                v-model="merchant_address"
+                label="店铺地址:"
+                required
+                icon="clear"
+                @click-icon="merchant_address = ''"
+                placeholder="请输入店铺地址"
+        />
+    </van-cell-group>
+
+    <div class="hc-submit-dev" >
+        <van-button size="large"  type="primary" v-on:click="submit()">确认并提交</van-button>
+    </div>
+</div>
+
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                name:'',
+                merchant_name:'',
+                merchant_address:'',
+                merchant_id:false,
+            };
+        },
+        mounted () {
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登陆',
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.history.go(-1);
+                });
+            }else{
+                var post_data = {
+                    method: 'get.merchant',
+                    nonce: 'get.merchant',
+                    merchant_id: this.merchant_id,
+                };
+                var _self = this;
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200){
+                            _self.name = data.data.name;
+                            _self.merchant_name = data.data.merchant_name;
+                            _self.merchant_address = data.data.merchant_address;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            }
+
+        },
+        methods: {
+            onRead(file) {
+                this.img = file.content
+            },
+            submit(){
+                var post_data = {
+                    method: 'set.merchant',
+                    nonce: 'set.merchant',
+                    name: this.name,
+                    merchant_name:this.merchant_name,
+                    merchant_address:this.merchant_address,
+                    merchant_id:this.merchant_id,
+                };
+                var _self = this;
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200){
+                            _self.$dialog.alert({
+                                title: '信息录入成功'
+                            }).then(() => {
+                                window.location.href = 'homestay.html'
+                            });
+                        }else{
+                            if(data.code !=202){
+                                pop_error_msg(data.msg,_self)
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+
+            },
+            addImg(file){
+
+            }
+        }
+    })
+</script>
+</body>
+</html>

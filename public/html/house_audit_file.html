@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+
+    <title>智慧黄厝</title>
+    <style>
+        .padding-fixed {
+            padding-top: 1em;
+        }
+        .van-cell__value{
+            font-size: 0.8em;
+            color:#4b0;
+        }
+        .hc-list{
+            padding: 10px 15px;
+            box-sizing: border-box;
+            line-height: 24px;
+            position: relative;
+            background-color: #fff;
+            color: #333;
+            font-size: 14px;
+            overflow: hidden;
+            border-bottom: 1px solid #e5e5e5;;
+        }
+        .hc-margin-top-xs .van-field .van-cell__title {
+            max-width: 125px;
+        }
+        .dorm-col-3 .van-col-7{
+            width: 31.333%;
+            margin-left:1.5%;
+            margin-bottom: 2.5em;
+        }
+        .file-hint{
+            padding: 1em;
+            font-size: 14px;
+        }
+        .file-block{
+            border: 2px solid #f1f1f1;
+            margin-left: 0.4em;
+            margin-right: 0.4em;
+            margin-bottom: 1em;
+            padding-right: 1.5em;
+            padding-left: 1.5em;
+        }
+        .file-block-title{
+            font-size: 14px;
+            padding-top: 0.8em;
+        }
+    </style>
+</head>
+<body >
+<div id="app" v-cloak>
+    <header class="hc-header">
+        <van-row style="width: 100%">
+            <a href="house_audit.html"><van-col span="4"><van-nav-bar left-arrow/></van-col></a>
+            <van-col span="16">房屋鉴定附件上传</van-col>
+            <van-col span="4"></van-col>
+        </van-row>
+    </header>
+    <div class="fixed_nav_bar"></div>
+
+    <van-cell-group>
+            <van-cell  title="附件下载：" />
+    </van-cell-group>
+    <van-row class="hc-list">
+        <a href="../file/公共场所地址方位示意图.doc" @click="downAddress">
+            <van-col span="21" >公共场所地址方位示意图</van-col>
+            <van-col span="3" class="text-right"> <img src="../img/config/down.png" height="20"/></van-col>
+        </a>
+    </van-row>
+    <van-row class="hc-list">
+        <a href="../file/公共制度.doc" @click="downSystem">
+            <van-col span="21" >公共制度</van-col>
+            <van-col span="3" class="text-right"> <img src="../img/config/down.png" height="20"/></van-col>
+        </a>
+    </van-row>
+    <van-row class="hc-list">
+        <a href="../file/黄厝社区民宿经营责任协议书.doc" @click="downDuty">
+            <van-col span="21" >黄厝社区民宿经营责任协议书 （两方）</van-col>
+            <van-col span="3" class="text-right"> <img src="../img/config/down.png" height="20"/></van-col>
+        </a>
+    </van-row>
+    <van-row class="hc-list">
+        <a href="../file/建筑结构质量鉴定委托书.doc" @click="downMass">
+            <van-col span="21" >建筑结构质量鉴定委托书</van-col>
+            <van-col span="3" class="text-right"> <img src="../img/config/down.png" height="20"/></van-col>
+        </a>
+    </van-row>
+    <van-row class="hc-list">
+        <a href="../file/民宿业治安管理制度.doc" @click="downSafe">
+            <van-col span="21" >民宿业治安管理制度</van-col>
+            <van-col span="3" class="text-right"> <img src="../img/config/down.png" height="20"/></van-col>
+        </a>
+    </van-row>
+    <van-row class="hc-list">
+        <a href="../file/厦门市个体工商户安全生产标准化建设自评表.doc" @click="downSelf">
+            <van-col span="21" >厦门市个体工商户安全生产标准化建设自评表</van-col>
+            <van-col span="3" class="text-right"> <img src="../img/config/down.png" height="20"/></van-col>
+        </a>
+    </van-row>
+    <van-row class="hc-list">
+        <a href="../file/厦门市民宿经营申报联合核验表.docx" @click="downAudit">
+            <van-col span="21" >厦门市民宿经营申报联合核验表</van-col>
+            <van-col span="3" class="text-right"> <img src="../img/config/down.png" height="20"/></van-col>
+        </a>
+    </van-row>
+    <van-row class="hc-list">
+        <a href="../file/授权委托书.doc" @click="downAccredit">
+            <van-col span="21" >授权委托书</van-col>
+            <van-col span="3" class="text-right"> <img src="../img/config/down.png" height="20"/></van-col>
+        </a>
+    </van-row>
+
+    <div class="hc-margin-bottom-xs hc-margin-top-xs file-hint">
+        说明：表格按要求填写,填写完毕后逐业扫描上传
+    </div>
+    <div class="file-block">
+        <div class="file-block-title">公共场所地址方位示意图</div>
+        <van-row class="hc-padding-bottom-xs hc-padding-top-xs">
+            <van-col span="10">
+                <van-uploader  :before-read="changeAddress" class="text-center" v-show="show_img">
+                    <img :src="address_img" height="129" width="129">
+                </van-uploader>
+                <div style="height: 129px"  v-if="show_img == false"></div>
+            </van-col>
+        </van-row>
+    </div>
+    <div class="file-block">
+        <div class="file-block-title">公共制度</div>
+        <van-row class="hc-padding-bottom-xs hc-padding-top-xs">
+            <van-col span="10">
+                <van-uploader  :before-read="changeSystem" class="text-center" v-show="show_img">
+                    <img :src="system_img" height="129" width="129">
+                </van-uploader>
+                <div style="height: 129px"  v-if="show_img == false"></div>
+            </van-col>
+        </van-row>
+    </div>
+    <div class="file-block">
+        <div class="file-block-title">黄厝社区民宿经营责任协议书</div>
+        <van-row class="hc-padding-bottom-xs hc-padding-top-xs">
+            <van-col span="10">
+                <van-uploader  :before-read="changeDutyOne" class="text-center" v-show="show_img">
+                    <img :src="duty_img_1" height="129" width="129">
+                </van-uploader>
+            </van-col>
+            <van-col span="10" offset="4">
+                <van-uploader  :before-read="changeDutyTwo" class="text-center" v-show="show_img">
+                    <img :src="duty_img_2" height="129" width="129">
+                </van-uploader>
+            </van-col>
+            <div style="height: 129px"  v-if="show_img == false"></div>
+        </van-row>
+    </div>
+    <div class="file-block">
+        <div class="file-block-title">建筑结构质量鉴定委托书</div>
+        <van-row class="hc-padding-bottom-xs hc-padding-top-xs">
+            <van-col span="10">
+                <van-uploader  :before-read="changeMass" class="text-center" v-show="show_img">
+                    <img :src="mass_img" height="129" width="129">
+                </van-uploader>
+                <div style="height: 129px"  v-if="show_img == false"></div>
+            </van-col>
+        </van-row>
+    </div>
+    <div class="file-block">
+        <div class="file-block-title">民宿业治安管理制度</div>
+        <van-row class="hc-padding-bottom-xs hc-padding-top-xs">
+            <van-col span="10">
+                <van-uploader  :before-read="changeSafe" class="text-center" v-show="show_img">
+                    <img :src="safe_img" height="129" width="129">
+                </van-uploader>
+                <div style="height: 129px"  v-if="show_img == false"></div>
+            </van-col>
+        </van-row>
+    </div>
+    <div class="file-block">
+        <div class="file-block-title">厦门市个体工商户安全生产标准化建设自评表</div>
+        <van-row class="hc-padding-bottom-xs hc-padding-top-xs">
+            <van-col span="10">
+                <van-uploader  :before-read="changeSelf" class="text-center" v-show="show_img">
+                    <img :src="self_img" height="129" width="129">
+                </van-uploader>
+                <div style="height: 129px"  v-if="show_img == false"></div>
+            </van-col>
+        </van-row>
+    </div>
+    <div class="file-block">
+        <div class="file-block-title">厦门市民宿经营申报联合核验表</div>
+        <van-row class="hc-padding-bottom-xs hc-padding-top-xs">
+            <van-col span="10">
+                <van-uploader  :before-read="changeAudit" class="text-center" v-show="show_img">
+                    <img :src="audit_img" height="129" width="129">
+                </van-uploader>
+                <div style="height: 129px"  v-if="show_img == false"></div>
+            </van-col>
+        </van-row>
+    </div>
+    <div class="file-block">
+        <div class="file-block-title">授权委托书</div>
+        <van-row class="hc-padding-bottom-xs hc-padding-top-xs">
+            <van-col span="10">
+                <van-uploader  :before-read="changeAccredit" class="text-center" v-show="show_img">
+                    <img :src="accredit_img" height="129" width="129">
+                </van-uploader>
+                <div style="height: 129px"  v-if="show_img == false"></div>
+            </van-col>
+        </van-row>
+    </div>
+
+
+    <div class="fixed_tab_bar"></div>
+    <div class="hc-fixed-bottom-btn" >
+        <van-button type="primary" bottom-action @click="submit">下一步</van-button>
+    </div>
+</div>
+
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script src="../js/dist/lrz.bundle.js"></script>
+<script>
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                img:'../img/config/file_add.png',
+                login_check: false,
+                merchant_id: false,
+                token:'',
+                show_img:false,
+                down_address:false,
+                down_system:false,
+                down_duty:false,
+                down_mass:false,
+                down_safe:false,
+                down_self:false,
+                down_audit:false,
+                down_accredit:false,
+                address_img:'',
+                system_img:'',
+                duty_img_1:'',
+                duty_img_2:'',
+                mass_img:'',
+                safe_img:'',
+                self_img:'',
+                audit_img:'',
+                accredit_img:'',
+            };
+        },
+        mounted:function () {
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登陆',
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.history.go(-1);
+                });
+            } else {
+                this.merchant_id = obj.data.id;
+                this.token = obj.data.api_token;
+                this.login_check = true;
+                var post_data = {
+                    method: 'get.house.audit',
+                    nonce: 'get.house.audit',
+                    merchant_id: this.merchant_id,
+                    token:this.token
+                };
+                var _self = this
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        _self.show_img = true;
+                        if(response.data.code == 200 ){
+                            var data = response.data.data;
+                            if(data.address_img){
+                                _self.address_img = '../storage'+data.address_img;
+                                _self.down_address = true;
+                                _self.down_system = true;
+                                _self.down_duty = true;
+                                _self.down_mass = true;
+                                _self.down_safe = true;
+                                _self.down_self = true;
+                                _self.down_audit = true;
+                                _self.down_accredit = true;
+                            }else{
+                                _self.address_img = _self.img;
+                            }
+                            if(data.system_img){
+                                _self.system_img ='../storage'+data.system_img;
+                            }else{
+                                _self.system_img = _self.img;
+                            }
+                            if(data.duty_img){
+                                if(data.duty_img[0]){
+                                    _self.duty_img_1 = '../storage'+data.duty_img[0];
+                                }else{
+                                    _self.duty_img_1 = _self.img;
+                                }
+                                if(data.duty_img[1]){
+                                    _self.duty_img_2 = '../storage'+data.duty_img[1];
+                                }else{
+                                    _self.duty_img_2 = _self.img;
+                                }
+                            }else{
+                                _self.duty_img_1 = _self.img;
+                                _self.duty_img_2 = _self.img;
+                            }
+                            if(data.mass_img){
+                                _self.mass_img = '../storage'+data.mass_img;
+                            }else{
+                                _self.mass_img = _self.img;
+                            }
+                            if(data.safe_img){
+                                _self.safe_img = '../storage'+data.mass_img;
+                            }else{
+                                _self.safe_img = _self.img;
+                            }
+                            if(data.self_img){
+                                _self.self_img = '../storage'+data.mass_img;
+                            }else{
+                                _self.self_img = _self.img;
+                            }
+                            if(data.audit_img){
+                                _self.audit_img = '../storage'+data.mass_img;
+                            }else{
+                                _self.audit_img = _self.img;
+                            }
+                            if(data.accredit_img){
+                                _self.accredit_img = '../storage'+data.mass_img;
+                            }else{
+                                _self.accredit_img = _self.img;
+                            }
+                        }else{
+                            _self.address_img = _self.img;
+                            _self.system_img = _self.img;
+                            _self.duty_img_1 = _self.img;
+                            _self.duty_img_2 = _self.img;
+                            _self.mass_img = _self.img;
+                            _self.safe_img = _self.img;
+                            _self.self_img = _self.img;
+                            _self.audit_img = _self.img;
+                            _self.accredit_img = _self.img;
+                            if(response.data.code !=202){
+                                pop_error_msg(response.data.data.msg,_self)
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            }
+
+        },
+        methods: {
+            changeAddress(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.address_img = rst.base64
+                })
+            },
+            changeSystem(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.system_img = rst.base64
+                })
+            },
+            changeDutyOne(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.duty_img_1 = rst.base64
+                })
+            },
+            changeDutyTwo(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.duty_img_2 = rst.base64
+                })
+            },
+            changeMass(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.mass_img = rst.base64
+                })
+            },
+            changeSafe(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.safe_img = rst.base64
+                })
+            },
+            changeSelf(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.self_img = rst.base64
+                })
+            },
+            changeAudit(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.audit_img = rst.base64
+                })
+            },
+            changeAccredit(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.accredit_img = rst.base64
+                })
+            },
+
+            submit(){
+                if(this.down_address == false){
+                    this.$dialog.alert({
+                        title: '请先下载公共场所地址方位示意图'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.down_system == false){
+                    this.$dialog.alert({
+                        title: '请先下载公共制度'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.down_duty == false){
+                    this.$dialog.alert({
+                        title: '请先下载黄厝社区民宿经营责任协议书'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.down_mass == false){
+                    this.$dialog.alert({
+                        title: '请先下载建筑结构质量鉴定委托书'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.down_safe == false){
+                    this.$dialog.alert({
+                        title: '请先下载民宿业治安管理制度'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.down_self == false){
+                    this.$dialog.alert({
+                        title: '请先下载厦门市个体工商户安全生产标准化建设自评表'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.down_audit == false){
+                    this.$dialog.alert({
+                        title: '请先下载厦门市民宿经营申报联合核验表'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.down_accredit == false){
+                    this.$dialog.alert({
+                        title: '请先下载授权委托书'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.address_img == this.img){
+                    this.$dialog.alert({
+                        title: '请上传公共场所地址方位示意图'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.system_img == this.img){
+                    this.$dialog.alert({
+                        title: '请上传公共制度'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.duty_img_1 == this.img){
+                    this.$dialog.alert({
+                        title: '请上传黄厝社区民宿经营责任协议书'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.duty_img_2 == this.img){
+                    this.$dialog.alert({
+                        title: '请上传黄厝社区民宿经营责任协议书'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.mass_img == this.img){
+                    this.$dialog.alert({
+                        title: ' 请上传建筑结构质量鉴定委托书'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.safe_img == this.img){
+                    this.$dialog.alert({
+                        title: '请上传民宿业治安管理制度'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.self_img == this.img){
+                    this.$dialog.alert({
+                        title: '请上传厦门市个体工商户安全生产标准化建设自评表'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.audit_img == this.img){
+                    this.$dialog.alert({
+                        title: '请上传厦门市民宿经营申报联合核验表'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                if(this.accredit_img== this.img){
+                    this.$dialog.alert({
+                        title: '请上传授权委托书'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                var post_data = {
+                    method: 'save.house.audit',
+                    nonce: 'save.house.audit',
+                    merchant_id: this.merchant_id,
+                    token:this.token,
+                    address_img:this.address_img,
+                    system_img:this.system_img,
+                    duty_img_1:this.duty_img_1,
+                    duty_img_2:this.duty_img_2,
+                    mass_img:this.mass_img,
+                    safe_img:this.safe_img,
+                    self_img:this.self_img,
+                    audit_img:this.audit_img,
+                    accredit_img:this.accredit_img,
+                };
+                var _self = this;
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200 ){
+                            _self.$dialog.alert({
+                                title: '房屋鉴定审核中，请耐心等待，审核需2-3个工作日'
+                            }).then(() => {
+                                window.location.href = 'hall.html';
+                            });
+
+                        }else{
+                            pop_error_msg(data.msg,_self)
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+
+            downAddress(){
+                this.down_address = true;
+            },
+            downSystem(){
+                this.down_system = true;
+            },
+            downDuty(){
+                this.down_duty = true;
+            },
+            downMass(){
+                this.down_mass = true;
+            },
+            downSafe(){
+                this.down_safe = true;
+            },
+            downSelf(){
+                this.down_self = true;
+            },
+            downAudit(){
+                this.down_audit = true;
+            },
+            downAccredit(){
+                this.down_accredit = true;
+            },
+        }
+    })
+
+</script>
+</body>
+</html>

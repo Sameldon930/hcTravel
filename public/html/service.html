@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .van{
+            min-height: 30vh;
+            background:#181f23;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url("../img/config/service_bgi.jpg") no-repeat;
+            background-size: cover;
+        }
+        .card-item {
+            display:flex;
+            justify-content:space-around;
+            flex-direction: row-reverse;
+            width: 100%;
+            align-items:center;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+        .item-title {
+            font-size: 0.6em;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar fixed title="企业服务" left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div style="padding-bottom: 8px;">
+        <van-cell-group class="van">
+        </van-cell-group>
+    </div>
+    <div>
+        <van-row gutter="15" style="margin: 12px 5px;">
+            <a href="renovation.html">
+                <van-col span="12">
+                    <div class="card-item">
+                        <div style="margin: 8px;width: 67vw;">
+                            <div>
+                                施工裝修
+                            </div>
+                            <div class="item-title">
+                                省时省力 安全放心
+                            </div>
+                        </div>
+                        <div style="width: 33vw;">
+                            <div style="padding: 10px;">
+                                <svg width="2.5em" height="2.5em" viewBox="0 0 0.0622659 0.0622659" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd">
+                                    <ellipse style="fill:#974578;" cx="0.0311328" cy="0.0107784" rx="0.0238024" ry="0.00821182"/>
+                                    <ellipse style="fill:#974578;" cx="0.0311328" cy="0.0144676" rx="0.0238024" ry="0.00821182"/>
+                                    <rect style="fill:#974578;" x="0.00735011" y="0.0104415" width="0.0475991" height="0.00446891"/>
+                                    <path style="fill:#974578;" d="M0.00697334 0.0217021l0 0.00678345c0,0 0.00833083,0.00737918 0.0235643,0.0067839 0.0152335,-0.000594838 0.0247545,-0.00702148 0.0247545,-0.00702148l0 -0.00654587c0,0 -0.0268967,0.0123772 -0.0483188,0z"/>
+                                    <path style="fill:#974578;" d="M0.00697334 0.0339601l0 0.00678345c0,0 0.00833083,0.00737918 0.0235643,0.0067839 0.0152335,-0.000594838 0.0247545,-0.00702148 0.0247545,-0.00702148l0 -0.00654587c0,0 -0.0268967,0.0123772 -0.0483188,0z"/>
+                                    <path style="fill:#974578;" d="M0.00697334 0.0460993l0 0.00678345c0,0 0.00833083,0.00737873 0.0235643,0.0067839 0.0152335,-0.00059528 0.0247545,-0.00702192 0.0247545,-0.00702192l0 -0.00654543c0,0 -0.0268967,0.0123772 -0.0483188,0z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </van-col>
+            </a>
+            <a href="goods.html">
+                <van-col span="12">
+                    <div class="card-item">
+                        <div style="margin: 8px;width: 67vw;">
+                            <div>
+                                二手物品
+                            </div>
+                            <div class="item-title">
+                                闲置物品 一站解决
+                            </div>
+                        </div>
+                        <div style="width: 33vw;">
+                            <div style="padding: 10px;">
+                                <svg width="2.5em" height="2.5em" viewBox="0 0 0.0622773 0.0622773" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd">
+                                    <path style="fill: #E77817;" d="M0.00317438 0.0125473l0.0283649 -0.0105227c0.000287977,-0.000106887 0.00057198,-0.000101587 0.000855541,1.63423e-005l0.0269767 0.0112024c0.000445658,0.000185065 0.000720827,0.000597156 0.000720827,0.00107992l0 0.029743c0,0.000440358 -0.000225258,0.000818439 -0.000612615,0.00102824l-0.0278914 0.0150892c-0.000365714,0.000197432 -0.000774271,0.000193016 -0.00113557,-1.28088e-005l-0.0276776 -0.0157831c-0.000377639,-0.000215541 -0.000593622,-0.000590089 -0.000590089,-0.00102515l0.000227025 -0.0297279c3.53347e-006,-0.000495569 0.000298136,-0.000915168 0.000762345,-0.00108742zm0.0312566 0.0154386l0.0194274 -0.00706472c0.000369689,-0.000134713 0.000748211,-8.43615e-005 0.0010702,0.000141339 0.000322429,0.0002257 0.00049866,0.00056403 0.00049866,0.000957569l0 0.0195379c0,0.0004408 -0.000225258,0.000818439 -0.000613056,0.00102824l-0.0194451 0.0105196c-0.000372781,0.000201849 -0.000791055,0.000193016 -0.00115544,-2.38509e-005 -0.000363947,-0.000217308 -0.000570655,-0.000581697 -0.000570213,-0.00100571l1.76673e-005 -0.0229923c4.41683e-007,-0.000500869 0.00029902,-0.000927093 0.000769854,-0.00109802zm-0.0235263 -0.0135261l0.0202172 -0.00758768c0.000276935,-0.000104237 0.000549012,-0.000103354 0.000825506,1.32505e-006l0.0199473 0.0075625c0.000467743,0.000177557 0.000760137,0.000606873 0.000754837,0.00110642 -5.74188e-006,0.000500427 -0.000307853,0.000923118 -0.000779571,0.00109007l-0.0204729 0.00723168c-0.000267218,9.40785e-005 -0.000525603,9.27535e-005 -0.000791496,-4.41683e-006l-0.0196916 -0.00720695c-0.000468626,-0.000171373 -0.000765879,-0.000594947 -0.000767646,-0.00109361 -1.76673e-006,-0.000498219 0.000291953,-0.000924443 0.00075837,-0.00109935z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </van-col>
+            </a>
+        </van-row>
+        <van-row gutter="15" style="margin: 4px 5px;">
+            <a href="network.html">
+                <van-col span="12">
+                    <div class="card-item">
+                        <div style="margin: 8px;width: 67vw;">
+                            <div>
+                                网络营销
+                            </div>
+                            <div class="item-title">
+                                提升销路 网站推广
+                            </div>
+                        </div>
+                        <div style="width: 33vw;">
+                            <div style="padding: 10px;">
+                                <!--22-->
+                                <svg width="2.5em" height="2.5em" viewBox="0 0 0.0616034 0.0616034" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd">
+                                    <path style="fill: #00923F;" d="M0.00397276 0.0271854c0,0 0.0129747,-0.0150723 0.0263387,-0.0137533 0.013364,0.00131901 0.0108986,0.0118069 0.0108986,0.0118069l-0.0199809 0c0,0 3.05832e-006,-0.00636787 0.00354329,-0.00802854 0,0 -0.0140499,0.00566096 -0.0141067,0.018592 -5.63605e-005,0.012931 0.0105932,0.0311136 0.0420231,0.0196847l0 -0.0120834c0,0 -0.00953236,0.0054495 -0.0177064,0.00493045 -0.00817402,-0.000519041 -0.0134938,-0.00648758 -0.0141426,-0.0124557l0.0367187 0c0,0 0.00272453,-0.0332156 -0.0251713,-0.0333453 0,0 -0.023484,-0.00194597 -0.0284144,0.0246523z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </van-col>
+            </a>
+            <a href="finance.html">
+                <van-col span="12">
+                    <div class="card-item">
+                        <div style="margin: 8px;width: 67vw;">
+                            <div>
+                                金融服务
+                            </div>
+                            <div class="item-title">
+                                资金短缺 寻求服务
+                            </div>
+                        </div>
+                        <div style="width: 33vw;">
+                            <div style="padding: 10px;">
+                                <svg width="2.5em" height="2.5em" viewBox="0 0 0.0615898 0.0615898" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd">
+                                    <path style="fill: #0093DD;" d="M0.0307949 0.00237929c0.0156905,0 0.0284152,0.0127246 0.0284152,0.0284152 0,0.015691 -0.0127246,0.0284156 -0.0284152,0.0284156 -0.015691,0 -0.0284156,-0.0127246 -0.0284156,-0.0284156 0,-0.0156905 0.0127246,-0.0284152 0.0284156,-0.0284152zm0.00368971 0.0457437l0 0.00590432 -0.00726628 0 0 -0.00588728c-0.000730778,-9.78447e-005 -0.00117283,-0.00018608 -0.00117283,-0.00018608 -0.00713874,-0.00146156 -0.00894318,-0.0089279 -0.00894318,-0.0089279l0.00582482 0c0.000970585,0.00546096 0.00460569,0.00558458 0.00760918,0.00570339 0.00300348,0.000119248 0.00731652,-0.00169874 0.00719508,-0.00582438 -0.000121432,-0.00412608 -0.00946517,-0.00618868 -0.0148043,-0.00849458 -0.00533953,-0.00230547 -0.00476207,-0.00606244 -0.00476207,-0.0072807 0,-0.00111648 0.000128421,-0.00854394 0.00893183,-0.00977618l0 -0.00511807 0.00726628 0 0 0.00558676c0.00728594,0.00220238 0.00858631,0.00930748 0.00858631,0.00930748l-0.00549765 5.24168e-006c-0.000484419,-0.00139298 -0.00242209,-0.00539544 -0.00696401,-0.0053321 -0.00454192,6.37738e-005 -0.00714529,0.00266627 -0.00705312,0.00493635 9.21663e-005,0.00227009 0.00278552,0.00429731 0.00999152,0.00611399 0.007206,0.00181668 0.0101942,0.00673644 0.00991945,0.0110049 -0.000274752,0.00426804 -0.00208007,0.00585933 -0.00650056,0.00761529 -0.000744319,0.000295718 -0.00154455,0.000504949 -0.0023605,0.000649532z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </van-col>
+            </a>
+        </van-row>
+    </div>
+
+
+
+</div>
+<script src="../js/app1.js"></script>
+<script>
+    var app = new Vue({
+        el:"#app",
+        methods: {
+            onClickLeft(){
+                location.href="../index.html"
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

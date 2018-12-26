@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .card_container {
+            display: flex;
+            justify-content: center;
+            flex-wrap:wrap;
+        }
+        .hc-card {
+            width: 40vw;
+            margin:2vw;
+            padding: 1vw;
+            background: #fff;
+        }
+        .hc-card img {
+            width: 40vw;
+            height:30vw;
+        }
+        .hc-card-title {
+            font-size: 0.8rem;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:normal;
+            padding: 3px 2px;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar fixed
+                     title="产权证分类"
+                     left-arrow
+                     @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div class="card_container">
+
+        <div class="hc-card">
+            <a href="property.html">
+                <div style="width: 100%;">
+                    <img src="../img/icons/banshi/i14.png"
+                         alt="">
+                </div>
+                <div class="hc-card-title">
+                    <a>集体土地使用权证农村房屋所有权证</a>
+                </div>
+            </a>
+        </div>
+
+        <div class="hc-card">
+            <a href="property.html">
+                <div style="width: 100%;">
+                    <img src="../img/icons/banshi/i14.png"
+                         alt="">
+                </div>
+                <div class="hc-card-title">
+                    <a>乡村建房宅基地许可证个人建房田地临时凭据</a>
+                </div>
+            </a>
+        </div>
+        <div class="hc-card">
+            <a href="property.html">
+                <div style="width: 100%;">
+                    <img src="../img/icons/banshi/i14.png"
+                         alt="">
+                </div>
+                <div class="hc-card-title">
+                    <a>乡村房屋契证</a>
+                </div>
+            </a>
+        </div>
+        <div class="hc-card">
+            <a href="property.html">
+                <div style="width: 100%;">
+                    <img src="../img/icons/banshi/i14.png"
+                         alt="">
+                </div>
+                <div class="hc-card-title">
+                    <a>土地房产所有证</a>
+                </div>
+            </a>
+        </div>
+        <div class="hc-card">
+            <a href="property.html">
+                <div style="width: 100%;">
+                    <img src="../img/icons/banshi/i14.png"
+                         alt="">
+                </div>
+                <div class="hc-card-title">
+                    <a>乡村企业田地许可证</a>
+                </div>
+            </a>
+        </div>
+        <div class="hc-card">
+            <a href="property.html">
+                <div style="width: 100%;">
+                    <img src="../img/icons/banshi/i14.png"
+                         alt="">
+                </div>
+                <div class="hc-card-title">
+                    <a>建设工程规划许可证</a>
+                </div>
+            </a>
+        </div>
+        <div class="hc-card">
+            <a href="property.html">
+                <div style="width: 100%;">
+                    <img src="../img/icons/banshi/i14.png"
+                         alt="">
+                </div>
+                <div class="hc-card-title">
+                    <a>私危房翻改建许可证</a>
+                </div>
+            </a>
+        </div>
+        <div class="hc-card">
+            <a href="property.html">
+                <div style="width: 100%;">
+                    <img src="../img/icons/banshi/i14.png"
+                         alt="">
+                </div>
+                <div class="hc-card-title">
+                    <a>其他</a>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+            };
+        },
+        mounted () {
+            var _self =this ;
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        _self.items = data.data;
+
+                    }
+                }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        methods: {
+
+            onClickLeft(){
+                location.href="./homestay.html"
+            }
+
+        }
+    });
+
+</script>
+
+</body>
+</html>

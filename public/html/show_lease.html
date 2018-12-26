@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <title>智慧黄厝</title>
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+
+    </style>
+</head>
+<body >
+<div id="app" v-cloak>
+    <header class="hc-header">
+        <van-row style="width: 100%" >
+            <a href="javascript:history.back()"><van-col span="4"><van-nav-bar left-arrow/></van-col></a>
+            <van-col span="16">租赁合同</van-col>
+            <van-col span="4"></van-col>
+        </van-row>
+    </header>
+
+    <div class="fixed_nav_bar"></div>
+    <van-row class="hc-padding-top-sm">
+        <div v-for="item in items" class="text-center">
+            <van-col span="12" ><img :src="item" width="150"></van-col>
+        </div>
+    </van-row>
+    <div class="fixed_tab_bar"></div>
+    <div class="hc-fixed-bottom-btn" >
+        <van-row>
+            <van-col span="12">
+                <a href="javascript:history.back()">
+                <van-button bottom-action>
+                  <div>确定</div>
+                </van-button>
+                </a>
+            </van-col>
+            <van-col span="12">
+                <a href="lease.html"><van-button type="primary" bottom-action>重新上传</van-button></a>
+            </van-col>
+        </van-row>
+    </div>
+</div>
+
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script src="../js/dist/lrz.bundle.js"></script>
+<script>
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                img:'../img/config/nn.png',
+                default_img:'../img/config/nn.png',
+                merchant_id: false,
+                items: [],
+                login_check: false,
+            };
+        },
+        mounted () {
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登陆',
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.history.go(-1);
+                });
+            } else {
+                this.merchant_id = obj.data.id;
+                this.login_check = true;
+                var post_data = {
+                    method: 'get.merchant.info',
+                    nonce: 'get.merchant.info',
+                    merchant_id: this.merchant_id,
+                };
+                var _self = this
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200 ){
+                            if(data.data.contract_tenancy){
+                                var img_array = [];
+                                for(var i = 0;i<data.data.contract_tenancy.length;i++){
+                                    img_array[i] ='../storage'+data.data.contract_tenancy[i];
+                                    console.log(data.data.contract_tenancy[i]);
+                                }
+                                _self.items = img_array;
+                                console.log(_self.items);
+                            }
+                        }else{
+                            if(data.code !=202){
+                                pop_error_msg(data.msg,_self)
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            }
+
+        },
+        methods: {
+            compress(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.img = rst.base64;
+                    _self.img_array.push(rst.base64);
+                    _self.img_array;
+                })
+
+            },
+            submit(){
+                if(this.img == this.default_img){
+                    this.$dialog.alert({
+                        title: '请上传产权证明图片'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                var post_data = {
+                    method: 'save.property',
+                    nonce: 'save.property',
+                    img:JSON.stringify(this.img_array),
+                    merchant_id: this.merchant_id,
+                };
+                var _self = this;
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200 ){
+                            _self.$dialog.alert({
+                                title: '信息录入成功'
+                            }).then(() => {
+                                window.location.href = 'homestay.html'
+                            });
+
+                        }else{
+                            pop_error_msg(data.msg,_self)
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+
+            },
+            addImg(){
+                $('.van-uploader__input').click();
+            },
+            deleteImg(){
+                if(this.img == this.default_img){
+                    this.$dialog.alert({
+                        message: '请先添加图片'
+                    }).then(() => {
+                    });
+                }else{
+                    var info_len = this.img_array.length;
+                    console.log(info_len);
+                    if(info_len == 0){
+                        this.img = this.default_img;
+                    }else{
+                        this.img_array.pop();
+                        if(info_len == 1){
+                            console.log(this.default_img)
+                            this.img = this.default_img;
+                        }else{
+                            this.img = this.img_array[info_len-2];
+                        }
+
+                    }
+
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

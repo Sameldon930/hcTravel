@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .good-container{
+            background: #fff;
+        }
+        .good-detail img{
+            width: 100vw;
+            height: 64vw;
+        }
+        .good-message > div{
+            padding: 1vw 3vw;
+        }
+        .fix-blank {
+            padding-top: 10px;
+        }
+        .hc-card img {
+            width: 46vw;
+            height:30vw;
+        }
+        .renovation_title{
+            display: flex;
+            width: 100%;
+            padding: 1rem 0 ;
+            border-bottom:1px solid #bbbbbb;
+            justify-content: center;
+            white-space:normal;
+            text-overflow:ellipsis;overflow:hidden;flex-direction: column;
+            font-weight: bold;
+            letter-spacing:1px
+        }
+        .renovation_type{
+            display: flex;
+            width: 100%;
+            border-bottom:1px solid #bbbbbb;
+            height:7vh;
+            white-space:normal;
+            text-overflow:ellipsis;overflow:hidden;flex-direction: column;
+            justify-content: center
+        }
+        .renovation_name{
+            display: flex;
+            width: 100%;
+            border-bottom:1px solid #bbbbbb;
+            height:7vh;
+            white-space:normal;
+            text-overflow:ellipsis;overflow:hidden;flex-direction: column;
+            justify-content: center
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app">
+    <div>
+        <van-nav-bar fixed
+                title="施工装修"
+                left-arrow
+                @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div v-cloak>
+        <div style="background: #ffffff;padding:0 3vw;">
+            <div class="renovation_title" >
+                <div  v-if="!title" v-cloak>施工装修标题未知</div>
+                <div  else v-cloak>{{title}}</div>
+            </div>
+            <div class="renovation_type" >
+            <div  v-if="!type" v-cloak>服务类型未知</div>
+                <div  else v-cloak>
+                    服务类型&nbsp;&nbsp;{{type}}
+                </div>
+            </div>
+            <div class="renovation_name" >
+            <div  v-if="!name" v-cloak>
+                    联系商家未知
+                </div>
+                <div  v-else v-cloak>
+                    联系商家&nbsp;&nbsp;{{name}}
+                </div>
+            </div>
+        </div>
+        <div class="fix-blank"></div>
+        <div class="good-container">
+            <div class="good-message">
+                <div style="font-size: 0.8em;">
+                    <div style="border-left: 3px solid #e51c23;">&nbsp;服务详情</div>
+                </div>
+                <div  v-if="!content" v-cloak>
+                    暂无详情
+                </div>
+                <div style="padding: 2px 20px;" v-html='content' v-else v-cloak>
+                    {{content}}
+                </div>
+                <div class="fix-blank"></div>
+            </div>
+        </div>
+        <div style="bottom: 0px;position: fixed;width: 100vw;" >
+            <van-row>
+                <van-col span="12">
+                    <van-button bottom-action>
+                        <div>Tel:{{mobile}}</div>
+                    </van-button>
+                </van-col>
+                <a @click="doMobile(mobile)">
+                    <van-col span="12">
+                        <van-button type="primary"  type="primary" bottom-action><van-icon name="phone" /></van-button>
+                    </van-col>
+                </a>
+            </van-row>
+        </div>
+    </div>
+
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+    //活动内容
+    var post_data = {
+        id: data_id,
+        method: 'decoration.get.one',
+        nonce: 'decoration.get.one',
+
+    };
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                title:'',
+                name:'',
+                address:'',
+                content:'',
+                mobile:'',
+                created_time:'',
+                url:'',
+                type:''
+            };
+        },
+        mounted () {
+            var _self =this ;
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        console.log(response.data.data.content)
+                        _self.items = data.data;
+                        _self.title = data.data.title;
+                        _self.name = data.data.name;
+                        _self.address = data.data.address;
+                        _self.content = data.data.content;
+                        _self.mobile = data.data.mobile;
+                        _self.created_time = data.data.created_time;
+                        _self.url = data.data.url;
+                        _self.type = data.data.type;
+
+                    }
+
+                }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        methods: {
+
+            onClickLeft(){
+                location.href="/html/renovation.html"
+            },
+            doMobile(mobile){
+                window.location.href = 'tel:'+ mobile;
+                console.log(mobile);
+            }
+
+        }
+    });
+</script>
+
+</body>
+</html>

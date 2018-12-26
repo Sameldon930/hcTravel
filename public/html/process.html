@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar title="流程说明" left-arrow @click-left="onClickLeft" fixed/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+    <van-row>
+        <img src="../img/config/homestay_process.jpg" alt="" style="width: 100%;height: auto;">
+    </van-row>
+    <div class="fixed_tab_bar"></div>
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                agreement: false,
+            };
+        },
+        methods: {
+            onClickLeft() {
+                window.history.go(-1);
+            },
+        }
+    });
+</script>
+
+</body>
+</html>

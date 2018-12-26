@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .init-background {
+            background-color: #f7f7f7;
+        }
+        .feedback::after {
+            content: '';
+            display: block;
+            height: 2px;
+            background: -webkit-repeating-linear-gradient( 135deg, #ff6c6c 0, #ff6c6c 20%, transparent 0, transparent 25%, #3283fa 0, #3283fa 45%, transparent 0, transparent 50% );
+            background: repeating-linear-gradient( -45deg, #ff6c6c 0, #ff6c6c 20%, transparent 0, transparent 25%, #3283fa 0, #3283fa 45%, transparent 0, transparent 50% );
+            background-size: 80px;
+            margin-top: 0.6rem;
+        }
+        .feedback-item{
+            text-indent: 0;
+            margin: 0.6rem auto;
+        }
+        .feedback-item-reply {
+            text-indent: 2rem;
+        }
+        .content-item{
+            border-radius: 2vw;
+            background-color: #fff;
+            padding: 0.8rem;
+        }
+        .content-show {
+            text-indent: 2rem;
+            margin: 0.6rem auto;
+        }
+        .content-time{
+            display: flex;
+            margin-top: 0.6rem;
+        }
+        .time-item {
+            flex-grow: 1;
+            text-align: right;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+        .reply-item {
+            border-radius: 2vw;
+            background-color: #fff;
+            padding: 1rem;
+            margin: 2rem auto;
+        }
+        .reply-container{
+            text-indent: 2rem;
+            margin: 0.6rem auto;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app init-background" v-cloak>
+    <div>
+        <van-nav-bar title="反馈信息" fixed
+                     left-arrow
+                     @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div  style="padding: 1rem;">
+        <div>
+            <div class="content-item">
+                <div>反馈内容：</div>
+                <div class="content-show">{{content}}</div>
+                <div v-show="img != ''&&img != null">
+                    <img :src="img" style="width: 100%;height: 100%;">
+                </div>
+                <div class="content-time">
+                    <div class="time-item">{{create_at}}</div>
+                </div>
+            </div>
+            <div class="reply-item">
+                <div>回复：</div>
+                <div class="reply-container" v-html="feedback"></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+    //活动内容
+    var base_url = '../storage'
+    var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                feedback:'',
+                create_at:'',
+                content:'',
+                is_read: 1,
+                feedback_id: '',
+                img: '',
+            };
+        },
+        mounted () {
+            var _self =this ;
+            let post_data = {
+                id: data_id,
+                method: 'feedback.get.one',
+                nonce: 'feedback.get.one',
+
+            };
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        _self.items = data.data;
+                        _self.feedback = data.data.feedback;
+                        _self.create_at = data.data.create_at;
+                        _self.content = data.data.content;
+                        _self.is_read = data.data.is_read;
+                        _self.img = data.data.img != null ? base_url+data.data.img : '';
+                    }
+
+                }).catch(function (error) {
+                console.log(error);
+            });
+            this.onRead();
+        },
+        methods: {
+            onRead() {
+                let post_data = {
+                    method: 'feedback.read',
+                    nonce: 'feedback.read',
+                    merchant_id: obj.data.id,
+                    token: obj.data.api_token,
+                    feedback_id: data_id
+                }
+                axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                    if (response.data.code == '200') {
+                        return true;
+                    }else {
+                        if(response.data.code == '005') {
+                            this.login_check = false;
+                            window.localStorage.removeItem('HC.merchant');
+                            this.$dialog.confirm({
+                                title: '请重新登录',
+                                message: response.data.msg
+                            }).then(() => {
+                                window.location.href = 'login.html';
+                            }).catch(() => {
+                                window.location.href = '../index.html';
+                            });
+                        }
+                    }
+                }).catch(error => {
+                    console.log(error);
+                });
+            },
+            onClickLeft(){
+                location.href="./notify_feedback_list.html"
+            }
+
+        }
+    });
+</script>
+
+</body>
+</html>

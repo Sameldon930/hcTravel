@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .good-container{
+            background: #fff;
+        }
+        .good-detail {
+            width: 100vw;
+        }
+        .good-detail img{
+            width: 100vw;
+            height: 64vw;
+        }
+        .good-message > div{
+            padding: 1vw 4vw;
+        }
+        .good-price{
+            display: flex;
+            justify-content: space-between;
+        }
+        .fix-blank {
+            padding-top: 10px;
+        }
+        .good-description {
+            font-size: 0.9em;
+            padding-bottom: 30px;
+        }
+        .hc-flex {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .hc-flex div{
+            text-align: center;
+        }
+        .rent-title {
+            font-size: 0.8rem;
+        }
+        .rent-content {
+            color: #ed1709;
+            padding-top: 8px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar fixed title="商铺招租" left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div class="good-container">
+        <div class="good-detail">
+            <div>
+                <img :src="'../storage/serve/'+thumbnail">
+            </div>
+            <div class="good-message">
+                <div style="font-size: 1.2em;">{{title}}</div>
+                <div class="good-price">
+                    <div style="color: #e51c2a;font-size: 0.8rem;line-height: 2rem;">个人-{{created_time}}</div>
+                    <!--<div style="font-size: 0.8rem;line-height: 2rem;">当前在线</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fix-blank"></div>
+
+    <van-row class="good-container" style="padding: 10px 3vw;">
+        <van-col span="8" class="hc-flex">
+            <div class="rent-title">房屋类型</div>
+            <div class="rent-content">{{house_type}}</div>
+        </van-col>
+        <van-col span="8" class="hc-flex">
+            <div class="rent-title">租凭方式</div>
+            <div class="rent-content">{{rent_way}}</div>
+        </van-col>
+        <van-col span="8" class="hc-flex">
+            <div class="rent-title">支付方式</div>
+            <div class="rent-content">{{payment_mode}}</div>
+        </van-col>
+    </van-row>
+
+    <div class="fix-blank"></div>
+
+    <div class="good-container">
+        <div class="good-message">
+            <div style="font-size: 0.8em;">
+                <div style="border-left: 3px solid #e51c23;">&nbsp;房源描述</div>
+            </div>
+            <div class="good-description">
+                {{content==''? '暂无描述': content }}
+            </div>
+            <div class="fix-blank"></div>
+        </div>
+    </div>
+
+    <div class="fixed_tab_bar"></div>
+    <div style="bottom: 0px;position: fixed;width: 100vw;" >
+        <van-row>
+            <van-col span="12">
+                <van-button bottom-action>
+                    <div>Tel:{{mobile}}</div>
+                </van-button>
+            </van-col>
+            <a @click="doMobile(mobile)">
+                <van-col span="12">
+                    <van-button class="style-color" type="primary" bottom-action><van-icon name="phone" /></van-button>
+                </van-col>
+            </a>
+        </van-row>
+    </div>
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+    //活动内容
+    var post_data = {
+        id: data_id,
+        method: 'rent.get.one',
+        nonce: 'rent.get.one',
+
+    };
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                title:'',
+                price:'',
+                content:'',
+                mobile:'',
+                created_time:'',
+                rent_way:'',
+                thumbnail:'',
+                house_type:'',
+                payment_mode:'',
+            };
+        },
+        mounted () {
+            var _self =this ;
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        console.log(response.data.data.content)
+                        _self.items = data.data;
+                        _self.title = data.data.title;
+                        _self.price = data.data.price;
+                        _self.mobile = data.data.mobile;
+                        _self.content = data.data.content;
+                        _self.created_time = data.data.created_time;
+                        _self.rent_way = data.data.rent_way;
+                        _self.house_type = data.data.house_type;
+                        _self.thumbnail = data.data.thumbnail;
+                        _self.payment_mode = data.data.payment_mode;
+                    }
+
+                }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        methods: {
+            onClickLeft(){
+                location.href="/html/rent.html"
+            },
+            doMobile(mobile){
+                window.location.href = 'tel:'+ mobile;
+                console.log(mobile);
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

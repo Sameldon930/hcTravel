@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+
+    <title>智慧黄厝</title>
+    <style>
+
+        .hc-margin-top-xs .van-field .van-cell__title {
+            max-width: 125px;
+        }
+        .dorm-col-3 .van-col-7{
+            width: 31.333%;
+            margin-left:1.5%;
+            margin-bottom: 2.5em;
+        }
+    </style>
+</head>
+<body class="hc-body-gray">
+<div id="app" v-cloak>
+    <header class="hc-header">
+        <van-row style="width: 100%">
+            <a href="hall.html"><van-col span="4"><van-nav-bar left-arrow/></van-col></a>
+            <van-col span="16">房屋鉴定</van-col>
+            <van-col span="4"></van-col>
+        </van-row>
+    </header>
+    <div class="fixed_nav_bar"></div>
+
+    <van-uploader :before-read="compress"  hiddent></van-uploader>
+    <div class="hc-img-center hc-margin-bottom-xs" v-show="default_img">
+        <img  :src="img" width="127" height="127" @click="addImg">
+    </div>
+    <van-row class="dorm-col-3 hc-margin-bottom-xs hc-margin-top" v-show="show_img" >
+        <van-col span="7" v-for="(item,index) in items">
+            <img :src="item" width="100%"  :id="index" >
+        </van-col>
+    </van-row>
+    <div >
+        <img src="../img/config/add.png" width="45" class="hc-fixed-add-btn"  @click = 'addImg' ></van-col>
+        <img src="../img/config/delete.png" width="45" class="hc-fixed-delete-btn" @click = 'deleteImg' ></van-col>
+    </div>
+
+    <div class="hc-margin-bottom-xs hc-margin-top-xs">
+        <van-cell-group>
+            <van-field
+                    v-model="code"
+                    label="房屋审批报告编号:"
+                    placeholder="请输入房屋审批报告编号"
+                    icon="clear"
+                    @click-icon="code = ''"
+                    required
+            />
+        </van-cell-group>
+    </div>
+
+
+
+    <div class="fixed_tab_bar"></div>
+    <div class="hc-fixed-bottom-btn" >
+        <van-button type="primary" bottom-action @click="submit">下一步</van-button>
+    </div>
+</div>
+
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script src="../js/dist/lrz.bundle.js"></script>
+<script>
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                img:'../img/config/nn.png',
+                default_img:false,
+                login_check: false,
+                merchant_id: false,
+                token:'',
+                items: [],
+                show_img:false,
+                code:'',
+            };
+        },
+        mounted:function () {
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登陆',
+                    message: ''
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.history.go(-1);
+                });
+            } else {
+                this.merchant_id = obj.data.id;
+                this.token = obj.data.api_token;
+                this.login_check = true;
+                var post_data = {
+                    method: 'get.house.audit',
+                    nonce: 'get.house.audit',
+                    merchant_id: this.merchant_id,
+                    token:this.token
+                };
+                var _self = this
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200 ){
+                            if(data.data.status == 3){
+                                _self.$dialog.alert({
+                                    title:'房屋鉴定成功'
+                                }).then(() => {
+                                    window.history.go(-1);
+                                })
+                            }
+                            if(data.data.status == 2){
+                                _self.$dialog.alert({
+                                    title:'房屋鉴定中，请耐心等待鉴定结果'
+                                }).then(() => {
+                                    window.history.go(-1);
+                                })
+                            }
+                            if(data.data.img.length != 0){
+                                _self.show_img = true;
+                                var img_array = [];
+                                for(var i = 0;i<data.data.img.length;i++){
+                                    img_array[i] ='../storage'+data.data.img[i];
+                                }
+                                _self.items = img_array;
+                            }else{
+                                _self.default_img = true;
+                            }
+                            _self.code =  data.data.code;
+                        }else if(data.code == 202){
+                            _self.default_img = true;
+                        }else{
+                            if(data.code !=202){
+                                pop_error_msg(data.msg,_self)
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            }
+
+        },
+        methods: {
+            compress(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.items.push(rst.base64);
+                    _self.default_img = false;
+                    _self.show_img = true;
+                })
+            },
+            submit(){
+                if(this.items.length == 0){
+                    this.$dialog.alert({
+                        message: '请上传房屋鉴定证明'
+                    }).then(() => {
+
+                    });
+                    return false;
+                }
+                var post_data = {
+                    method: 'save.house.audit.code',
+                    nonce: 'save.house.audit.code',
+                    img:JSON.stringify(this.items),
+                    merchant_id: this.merchant_id,
+                    token:this.token,
+                    code:this.code,
+                };
+                var _self = this;
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200 ){
+                            window.location.href = 'house_audit_file.html';
+                        }else{
+                            pop_error_msg(data.msg,_self)
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            addImg(){
+                $('.van-uploader__input').click();
+            },
+            deleteImg(){
+                if(this.img == this.default_img){
+                    this.$dialog.alert({
+                        message: '请先添加图片'
+                    }).then(() => {
+                    });
+                }else{
+                    if(this.default_img == true){
+                        this.$dialog.alert({
+                            message: '请先添加图片'
+                        }).then(() => {
+                        });
+                        return false
+                    }else{
+                        var info_len = this.items.length;
+                        this.items.pop();
+                        if(info_len == 1){
+                            this.default_img = true;
+                        }
+                    }
+
+                }
+            },
+        }
+    })
+
+</script>
+</body>
+</html>

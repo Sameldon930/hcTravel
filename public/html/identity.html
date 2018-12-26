@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .fill-dev{
+            height: calc( 3.2em + 254px );
+        }
+    </style>
+    <title>身份证</title>
+</head>
+<body class="hc-body-gray">
+<div id="app" v-cloak>
+    <header class="hc-header">
+        <van-row style="width: 100%">
+            <a href="javascript:history.go(-1)"><van-col span="4"><van-nav-bar left-arrow/></van-col></a>
+            <van-col span="16">身份证信息</van-col>
+            <van-col span="4"></van-col>
+        </van-row>
+    </header>
+    <div class="fixed_nav_bar"></div>
+    <div v-show="show_img">
+        <van-uploader :before-read="frontImg"  class="hc-img-center">
+            <div class="hc-margin-bottom-xs">法人身份证正面</div>
+            <img  :src="front_img" width="100" height="100">
+        </van-uploader>
+        <van-uploader :before-read="backImg" class="hc-img-center">
+            <div class="hc-margin-bottom-xs">法人身份证反面</div>
+            <img  :src="back_img" width="100" height="100">
+        </van-uploader>
+    </div>
+    <div  class="hc-img-center fill-dev"  v-if="show_img == false"></div>
+    <van-cell-group>
+        <van-field
+                v-model="identity_name"
+                label="姓名:"
+                placeholder="请输入法人姓名"
+                icon="clear"
+                @click-icon="identity_name = ''"
+                required
+                maxlength = 10
+        />
+    </van-cell-group>
+    <van-cell-group>
+        <van-field
+                v-model="identity_num"
+                label="身份证号:"
+                placeholder="请输入法人身份证号"
+                icon="clear"
+                @click-icon="identity_num = ''"
+                required
+                maxlength = 18
+        />
+    </van-cell-group>
+
+    <div class="fixed_tab_bar" v-if="show_img == false"></div>
+    <div class="hc-fixed-bottom-btn" >
+        <van-row>
+            <van-col span="12">
+                <van-button bottom-action @click="reset">
+                    <div>重置</div>
+                </van-button>
+            </van-col>
+            <van-col span="12">
+                <van-button type="primary" bottom-action @click="goSubmit">确认并提交</van-button>
+            </van-col>
+        </van-row>
+    </div>
+</div>
+
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script src="../js/dist/lrz.bundle.js"></script>
+<script>
+
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                front_img:'../img/config/nn.png',
+                back_img:'../img/config/nn.png',
+                config:'../img/config/nn.png',
+                identity_name:'',
+                identity_num:'',
+                login_check: false,
+                merchant_id: false,
+                token: false,
+                show_img:false
+            };
+        },
+        mounted () {
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登陆',
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.history.go(-1);
+                });
+            } else {
+                this.merchant_id = obj.data.id;
+                this.token = obj.data.api_token;
+                this.login_check = true;
+                var post_data = {
+                    method: 'get.merchant.info',
+                    nonce: 'get.merchant.info',
+                    merchant_id: this.merchant_id,
+                    token: this.token,
+                };
+                var _self = this
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        _self.show_img = true;
+                        if(data.code == 200 ){
+                            _self.front_img = data.data.identity_front == null ? _self.config : '../storage'+data.data.identity_front;
+                            _self.back_img = data.data.identity_contrary == null ? _self.config : '../storage'+data.data.identity_contrary;
+                            _self.identity_name = data.data.identity_name;
+                            _self.identity_num = data.data.identity_num;
+
+                        }else{
+                            if(data.code !=202){
+                                pop_error_msg(data.msg,_self)
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            }
+
+        },
+        methods: {
+            frontImg(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.front_img = rst.base64
+                })
+
+            },
+            reset(){
+                this.front_img=this.config;
+                this.back_img=this.config;
+                this.identity_name='';
+                this.identity_num='';
+            },
+            backImg(file) {
+                var _self = this;
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.back_img  = rst.base64
+
+                })
+            },
+            goSubmit(){
+                if(this.front_img == this.config){
+                    this.$dialog.alert({
+                        title: '请上传身份证正面照'
+                    }).then(() => {
+
+                    });
+                    return false
+                }
+                if(this.identity_num.length<18){
+                    this.$toast('请正确输入身份证号码');
+                    return false
+                }
+                if(this.back_img == this.config){
+                    this.$dialog.alert({
+                        title: '请上传身份证反面照'
+                    }).then(() => {
+
+                    });
+                    return false
+                }
+
+                    var post_data = {
+                        method: 'save.identity',
+                        nonce: 'save.identity',
+                        front_img: this.front_img,
+                        back_img: this.back_img,
+                        identity_name:this.identity_name,
+                        identity_num:this.identity_num,
+                        merchant_id: this.merchant_id,
+                        token: this.token,
+                    };
+                    var _self = this;
+                    axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                        .then(function (response) {
+                            var data = response.data;
+                            if(data.code == 200 ){
+                                _self.$dialog.alert({
+                                    title: '信息录入成功'
+                                }).then(() => {
+                                    window.history.go(-1);
+                                });
+                            }else{
+                                pop_error_msg(data.msg,_self)
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                }
+            },
+            addImg(file){
+
+            }
+
+    })
+</script>
+</body>
+</html>

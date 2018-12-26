@@ -1,0 +1,3 @@
+2018.3.21 @xzx
+//将商户id初始值设置
+alter table merchants AUTO_INCREMENT= 36100666

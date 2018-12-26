@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <title>智慧黄厝</title>
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+
+    <style>
+        .dorm-col-3 .van-col-7{
+            width: 31.333%;
+            margin-left:1.5%;
+        }
+        .class-block{
+            border: 1px solid #BBBBBB ;
+            padding: 0.8em;
+            margin-top: 1em;
+            height: 140px;
+            font-size: 0.8em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body >
+<div id="app" v-cloak >
+    <header class="hc-header">
+        <van-row style="width: 100%" >
+            <a href="homestay.html"><van-col span="4"><van-nav-bar left-arrow/></van-col></a>
+            <van-col span="16">产权分类</van-col>
+            <van-col span="4"></van-col>
+        </van-row>
+    </header>
+    <div class="fixed_nav_bar"></div>
+    <van-row >
+        <a href="property.html?class=1">
+            <van-col class="class-block" span="10" offset="1">
+                <div  >
+                    <img src="../img/config/class.png" width="60%">
+                </div>
+                <div class="hc-padding-top-xs">集体土地使用权证</div>
+                <div >农村房屋所有权证</div>
+            </van-col>
+        </a>
+        <a href="property.html?class=2">
+            <van-col class="class-block" span="10" offset="2">
+                <div>
+                    <img src="../img/config/class.png" width="60%">
+                </div>
+                <div class="hc-padding-top-xs">乡村建房宅基地许可证</div>
+                <div >个人建房田地临时凭据</div>
+            </van-col>
+        </a>
+
+        <a href="property.html?class=3">
+            <van-col class="class-block" span="10" offset="1">
+                <div>
+                    <img src="../img/config/class.png" width="60%">
+                </div>
+                <div class="hc-padding-top-xs">乡村房屋契证</div>
+            </van-col>
+        </a>
+        <a href="property.html?class=4">
+            <van-col class="class-block" span="10" offset="2">
+                <div>
+                    <img src="../img/config/class.png" width="60%">
+                </div>
+                <div class="hc-padding-top-xs">土地房产所有证</div>
+            </van-col>
+        </a>
+
+        <a href="property.html?class=5">
+        <van-col class="class-block" span="10" offset="1">
+            <div>
+                <img src="../img/config/class.png" width="60%">
+            </div>
+            <div class="hc-padding-top-xs">乡村企业田地许可证</div>
+        </van-col>
+        </a>
+        <a href="property.html?class=6">
+        <van-col class="class-block" span="10" offset="2">
+            <div>
+                <img src="../img/config/class.png" width="60%">
+            </div>
+            <div class="hc-padding-top-xs">建设工程规划许可证</div>
+        </van-col>
+        </a>
+
+        <a href="property.html?class=7">
+            <van-col class="class-block" span="10" offset="1">
+                <div>
+                    <img src="../img/config/class.png" width="60%">
+                </div>
+                <div class="hc-padding-top-xs">私危房翻改建许可证</div>
+            </van-col>
+        </a>
+        <a href="property.html?class=8">
+            <van-col class="class-block" span="10" offset="2">
+                <div>
+                    <img src="../img/config/class.png" width="60%">
+                </div>
+                <div class="hc-padding-top-xs">其他</div>
+            </van-col>
+        </a>
+    </van-row>
+    <div class="hc-padding-top-sm"></div>
+</div>
+
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script src="../js/dist/lrz.bundle.js"></script>
+<script>
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                img:'../img/config/nn.png',
+                default_img:false,
+                login_check: false,
+                merchant_id: false,
+                token:'',
+                items: [],
+                show_img:false,
+            };
+        },
+        mounted () {
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登陆',
+                    message: ''
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.history.go(-1);
+                });
+            }
+
+
+        },
+        methods: {
+
+
+        }
+    })
+</script>
+</body>
+</html>

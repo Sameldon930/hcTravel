@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .good-container{
+            background: #fff;
+        }
+        .good-detail {
+            width: 100vw;
+        }
+        .good-detail img{
+            width: 100vw;
+            height: 64vw;
+        }
+        .good-message{
+            background: #fff;
+        }
+        .good-message > div{
+            padding: 1vw 3vw;
+        }
+        .good-price{
+            display: flex;
+            /*width: 100%;*/
+            justify-content: space-between;
+        }
+        .fix-blank {
+            padding-top: 10px;
+        }
+        .good-description {
+            font-size: 0.9em;
+            padding-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar fixed
+                     title="二手物品"
+                     left-arrow
+                     @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div class="good-container">
+        <div class="good-detail">
+            <div>
+                <img :src="'../storage/serve/'+thumbnail"
+                     alt="">
+            </div>
+            <div class="good-message">
+                <div>{{title}}</div>
+                <div class="good-price">
+                    <div style="color: #e51c2a;font-size: 1.2rem;">￥&nbsp;{{price}}</div>
+                    <div style="font-size: 0.8rem;line-height: 2rem;">{{new_level}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fix-blank"></div>
+    <div class="good-message">
+        <div class="good-price">
+            <div>类型:{{type}}</div>
+            <div>取货方式:{{measure}}</div>
+        </div>
+        <div>地址:{{address}}</div>
+    </div>
+    <div class="fix-blank"></div>
+    <div class="good-container">
+        <div class="good-message">
+            <div style="font-size: 0.8em;">
+                <div style="border-left: 3px solid #e51c23;">&nbsp;详细信息</div>
+            </div>
+            <div  style="padding: 2px 20px;" class="good-description" v-html='content'>
+                {{content}}
+            </div>
+            <div class="fix-blank"></div>
+        </div>
+    </div>
+
+    <div style="bottom: 0px;position: fixed;width: 100vw;" >
+        <van-row>
+            <van-col span="12">
+                <van-button bottom-action>
+                    <!--<h5>商家:{{name}}</h5><br/>-->
+                    <div>Tel:{{mobile}}</div>
+                </van-button>
+            </van-col>
+            <a @click="doMobile(mobile)">
+            <van-col span="12">
+                <van-button class="style-color" type="primary" bottom-action><van-icon name="phone" /></van-button>
+            </van-col>
+            </a>
+        </van-row>
+    </div>
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+    //活动内容
+    var post_data = {
+        id: data_id,
+        method: 'goods.get.one',
+        nonce: 'goods.get.one',
+
+    };
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                title:'',
+                price:'',
+                content:'',
+                mobile:'',
+                created_time:'',
+                name:'',
+                thumbnail:'',
+                new_level:'',
+                type:'',
+                address:'',
+                measure:''
+            };
+        },
+        mounted () {
+            var _self =this ;
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        console.log(response.data.data.content)
+                        _self.items = data.data;
+                        _self.title = data.data.title;
+                        _self.price = data.data.price;
+                        _self.mobile = data.data.mobile;
+                        _self.content = data.data.content;
+                        _self.created_time = data.data.created_time;
+                        _self.name = data.data.name;
+                        _self.thumbnail = data.data.thumbnail;
+                        _self.new_level = data.data.new_level;
+                        _self.measure = data.data.measure;
+                        _self.type = data.data.type;
+                        _self.address  = data.data.address;
+
+                    }
+
+                }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        methods: {
+
+            onClickLeft(){
+                location.href="/html/goods.html"
+            },
+            doMobile(mobile){
+                window.location.href = 'tel:'+ mobile;
+                console.log(mobile);
+            }
+
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .init-background {
+            background-color: #f7f7f7;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app" class="init-app init-background" v-cloak>
+    <div>
+        <van-nav-bar fixed title="政府政策" left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div style="padding: 2px 4vw;" >
+        <div class="am-g am-padding-top-sm" style="width: 100%;text-align: center;">
+            <div class="am-u-sm-12  am-text-lg" v-if="!title" v-cloak>文章标题未知</div>
+            <div class="am-u-sm-12  am-text-lg" else v-cloak><h2>{{title}}</h2></div>
+            <div class="am-u-sm-12 wis-font-gray am-text-center am-padding-vertical am-text-xs" >
+            <span v-if="!now" v-cloak>
+                时间
+            </span>
+                <span v-else v-cloak>
+                {{now}}
+            </span>
+            </div>
+            <div style="padding: 2px 20px;">
+                <div class="am-u-sm-12 wis-text" v-if="!content" v-cloak>
+                    内容
+                </div>
+                <div class="am-u-sm-12 wis-text" v-html='content' v-else v-cloak>
+                    {{content}}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+    //活动内容
+    var post_data = {
+        id: data_id,
+        method: 'article.get.one',
+        nonce: 'article.get.one',
+
+    };
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                title:'',
+                content:'',
+                now:''
+            };
+        },
+        mounted () {
+            var _self =this ;
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        console.log(response.data.data.content)
+                        _self.items = data.data;
+                        _self.title = data.data.title;
+                        _self.content = data.data.content;
+                        _self.now = data.data.now;
+
+                    }
+
+                }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        methods: {
+
+            onClickLeft(){
+                location.href="./policy.html?group_id=3"
+            }
+
+        }
+    });
+</script>
+
+</body>
+</html>

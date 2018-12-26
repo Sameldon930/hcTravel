@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+
+    <title>智慧黄厝</title>
+    <style>
+        .van-list .van-cell:not(:last-child)::after {
+            left: 0px;
+
+        }
+        .van-col {font-size: 14px}
+        .list_null{
+            display:flex;
+            width:100%;
+            margin: 1rem auto;
+            background-color:#fff;
+            height: 10vh;
+            justify-content: center;
+            border-radius: 40px;
+        }
+        .list_null_word{
+            display: flex;
+            margin: auto;
+            font-size: 1.5em;
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body >
+<div id="app" v-cloak>
+    <header class="hc-header">
+        <van-row style="width: 100%">
+            <a href="merchant.html"><van-col span="4"><van-nav-bar left-arrow/></van-col></a>
+            <van-col span="16">业务办理</van-col>
+            <van-col span="4"></van-col>
+        </van-row>
+    </header>
+    <div class="fixed_nav_bar"></div>
+    <div v-show="silly">
+        <div class="list_null" v-if="items == ''||items == null"
+             v-cloak>
+            <div class="list_null_word">您暂时没有业务办理 !</div>
+        </div>
+        <van-collapse  v-for="item in items" v-model="activeName" accordion >
+            <van-collapse-item v-clock :title="item.type" :name="item.id">
+                <van-row>
+                    <van-col span="24" class="hc-padding-xs" >审核情况：{{item.status}}</van-col>
+                    <van-col span="24"  class="hc-padding-xs" v-if="item.feedback" >拒绝原因：{{item.feedback}}</van-col>
+                    <van-col span="24"  class="hc-padding-xs" >时间: {{item.created_at}}</van-col>
+                </van-row>
+            </van-collapse-item>
+        </van-collapse>
+    </div>
+
+</div>
+
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script>
+
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items: [],
+                activeName: '0',
+                login_check: false,
+                merchant_id: false,
+                silly:false,
+            };
+        },
+        mounted (){
+            var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登录',
+                    message: ''
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.history.go(-1);
+                });
+            } else {
+                this.merchant_id = obj.data.id;
+                this.login_check = true;
+                var post_data = {
+                    method: 'verify.get.list',
+                    nonce: 'verify.get.list',
+                    merchant_id: this.merchant_id,
+                };
+                var _self = this
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200){
+                            _self.items = data.data;
+                            _self.silly = true;
+                        }else{
+                            pop_error_msg(data.msg,_self)
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            }
+
+
+        },
+        methods: {
+
+        }
+    })
+</script>
+</body>
+</html>

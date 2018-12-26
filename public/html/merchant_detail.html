@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .van{
+            height: 34vh;
+            width: 100vw;
+            background:#181f23;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url("../img/config/merchant_bgi.jpg") no-repeat;
+            background-size: cover;
+            position: relative;
+        }
+        .card-container {
+            width: 80vw;
+            height: auto;
+            min-height: 28vw;
+            border-radius: 2vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content:center;
+        }
+        .info-item{
+            display: flex;
+            padding: 0.4rem;
+        }
+        .info-input {
+            width: 100%;
+        }
+        .info-btn-container{
+            padding: 0.4rem;color: #ff0000;display: flex;justify-content: center;
+        }
+        .avatar-item{
+            width: 24vw;
+            height: 24vw;
+            border-radius: 50%;
+        }
+        .avatar-item img{
+            width: 22vw;
+            height: 22vw;
+            border: 1vw solid #ffffff;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" style="background-color: #fff;" v-cloak>
+    <div>
+        <van-nav-bar title="店铺详情" fixed left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div>
+        <van-cell-group class="van">
+            <div class="card-container">
+                <van-uploader  :before-read="compress" >
+                    <div style="padding: 4vw 4vw 1vw 4vw;">
+                        <svg v-if="avatar == null || avatar == ''" width="24vw" height="24vw" viewBox="0 0 0.182205 0.182205" style="border-radius:50%;ule:shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd">
+                            <circle style="fill:#969594;stroke:white;stroke-width:0.0112624;" cx="0.0911023" cy="0.0911023" r="0.0854711"/>
+                            <path style="fill:white" d="M0.0394372 0.128075c0,0 0.00265793,-0.0159476 0.00828688,-0.0217319 0.0056282,-0.00578512 0.0114133,-0.00922466 0.0139143,-0.00828688 0.00250176,0.000938534 0.0139151,0.0136027 0.029081,0.0131335 0.015166,-0.000469267 0.0282987,-0.0106317 0.0292372,-0.0123511 0.000937783,-0.00172014 0.00906774,-0.000938534 0.015009,0.0067229 0.00594129,0.00766069 0.00859922,0.023139 0.00859922,0.023139 0,0 -0.019716,0.0287702 -0.0558165,0.0275178 -0.0360998,-0.00125313 -0.0483112,-0.0281432 -0.0483112,-0.0281432zm0.0518401 -0.0891134c0.0176594,0 0.0319807,0.0143213 0.0319807,0.0319807 0,0.0176602 -0.0143213,0.0319807 -0.0319807,0.0319807 -0.0176594,0 -0.0319807,-0.0143205 -0.0319807,-0.0319807 0,-0.0176594 0.0143213,-0.0319807 0.0319807,-0.0319807z"/>
+                        </svg>
+                        <div v-else class="avatar-item">
+                            <img :src="avatar">
+                        </div>
+                    </div>
+                </van-uploader>
+                <div style="text-align: center;">
+                    <div style="font-size: 0.9em;">点击修改头像</div>
+                </div>
+            </div>
+        </van-cell-group>
+    </div>
+    <div style="width: 100vw;">
+        <div style="padding: 2vw;border-bottom: 1px solid #e3e3e3">
+            <div style="font-size: 0.8em;">
+                <div style="border-left: 3px solid #e51c23;">&nbsp;个人信息</div>
+            </div>
+        </div>
+        <div style="padding: 0.8rem;">
+            <van-row>
+                <van-col span="14" offset="2" class="info-item">
+                    <div style="min-width: 3rem;">昵称：</div>
+                    <div v-show="!editable">{{name}}</div>
+                    <div v-show="editable">
+                        <input type="text" class="info-input" v-model="name" placeholder="请输入昵称" maxlength="10">
+                    </div>
+                </van-col>
+                <van-col span="6" class="info-btn-container">
+                    <div v-show="!editable">
+                        <van-icon name="edit" @click="doEdit"/>
+                    </div>
+                    <div v-show="editable" style="font-size: 0.8em;display: flex;width: 100%;justify-content: space-around;">
+                        <div style="line-height: 1.8rem;" @click="saveName">保存</div>
+                        <div style="line-height: 1.8rem;" @click="cancelEdit">取消</div>
+                    </div>
+                </van-col>
+            </van-row>
+            <van-row>
+                <van-col span="20" offset="2" class="info-item">
+                    <div>手机号：</div>
+                    <div>{{mobile}}</div>
+                </van-col>
+            </van-row>
+            <van-row>
+                <van-col span="20" offset="2" class="info-item">
+                    <div>店铺编号：</div>
+                    <div>{{merchant_id}}</div>
+                </van-col>
+            </van-row>
+            <van-row>
+                <van-col span="20" offset="2" class="info-item">
+                    <div>店铺名称：</div>
+                    <div>{{merchant_short_name}}</div>
+                </van-col>
+            </van-row>
+            <van-row>
+                <van-col span="20" offset="2" class="info-item">
+                    <div>店铺地址：</div>
+                    <div>{{merchant_address}}</div>
+                </van-col>
+            </van-row>
+            <van-row>
+                <van-col span="20" offset="2" class="info-item">
+                    <div>商户入驻情况：</div>
+                    <div>{{merchant_enter}}</div>
+                </van-col>
+            </van-row>
+            <van-row>
+                <van-col span="20" offset="2" class="info-item">
+                    <div>民宿认证情况：</div>
+                    <div>{{merchant_approve}}</div>
+                </van-col>
+            </van-row>
+        </div>
+    </div>
+
+</div>
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script src="../js/dist/lrz.bundle.js"></script>
+
+<script>
+    var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+    var base_url = '../storage';
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                token: '',
+                avatar: '',
+                merchant_id: '',
+                mobile: '',
+                name: '',
+                temp_name: '',
+                temp_avatar: '',
+                merchant_short_name: '未设置',
+                merchant_address: '未设置',
+                login_check: false,
+                computedTime: 0,
+                editable: false,
+                merchant_enter: '未入驻',
+                merchant_approve: '未认证'
+            };
+        },
+        methods: {
+            onClickLeft() {
+                window.history.go(-1);
+            },
+            doEdit() {
+                this.name = '';
+                this.editable = true;
+            },
+            cancelEdit() {
+                this.name = this.temp_name;
+                this.editable = false;
+            },
+            compress(file){
+                let _self = this
+                lrz(file, {width: 1024}).then(function (rst) {
+                    _self.avatar = rst.base64
+                })
+                this.$dialog.confirm({
+                    title: '更换头像',
+                    message: '确定修改为当前头像？'
+                }).then(() => {
+                    this.saveAvatar();
+                }).catch(() => {
+                    this.avatar = this.temp_avatar;
+                });
+
+            },
+            saveAvatar() {
+                var _self = this
+                console.log(_self.avatar);
+                this.merchant_id = obj.data.id;
+                this.token = obj.data.api_token;
+                var post_data = {
+                    method: 'save.merchant.avatar',
+                    nonce: 'save.merchant.avatar',
+                    merchant_id: _self.merchant_id,
+                    token: this.token,
+                    avatar: this.avatar
+                };
+                console.log(post_data)
+                axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                    .then(function (response) {
+                        var data = response.data;
+                        if(data.code == 200 ){
+                            pop_error_msg(data.msg,_self)
+                        }else{
+                            if(response.data.code == '005') {
+                                this.login_check = false;
+                                window.localStorage.removeItem('HC.merchant');
+                                this.$dialog.confirm({
+                                    title: '请重新登录',
+                                    message: response.data.msg
+                                }).then(() => {
+                                    window.location.href = 'login.html';
+                                }).catch(() => {
+                                    window.location.href = '../index.html';
+                                });
+                            } else{
+                                pop_error_msg(data.msg,_self)
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            saveName() {
+                if(this.name == ''||this.name == null){
+                    this.$toast('昵称不能为空！');
+                    return false;
+                }
+                let post_data = {
+                    method: 'save.merchant.name',
+                    nonce: 'save.merchant.name',
+                    merchant_id: obj.data.id,
+                    token: obj.data.api_token,
+                    name: this.name
+                }
+                axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                    if (response.data.code == '200') {
+                        this.temp_name = this.name;
+                        this.$toast('昵称修改成功！');
+                    }else {
+                        if(response.data.code == '005') {
+                            this.login_check = false;
+                            window.localStorage.removeItem('HC.merchant');
+                            this.$dialog.confirm({
+                                title: '请重新登录',
+                                message: response.data.msg
+                            }).then(() => {
+                                window.location.href = 'login.html';
+                            }).catch(() => {
+                                window.location.href = '../index.html';
+                            });
+                        } else{
+                            console.log(response.data);
+                        }
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    this.name = this.temp_name;
+                });
+                // this.cancelEdit();
+                this.editable = false;
+
+            }
+        },
+        mounted () {
+            if (obj == null) {
+                this.login_check = false;
+                this.$dialog.confirm({
+                    title: '请先登录',
+
+                }).then(() => {
+                    window.location.href = 'login.html';
+                }).catch(() => {
+                    window.location.href = '../index.html';
+                });
+            } else {
+                this.login_check = true;
+            }
+            let post_data = {
+                method: 'merchant.get.one',
+                nonce: 'merchant.get.one',
+                merchant_id: obj.data.id,
+                token: obj.data.api_token,
+            }
+            axios.post('/api/v1',api_data_sign(post_data, 'hc')).then(response => {
+                if (response.data.code == '200') {
+                    let merchantInfo = response.data.data.merchant_info;
+                    let merchant =response.data.data;
+                    console.log(merchant);
+                    this.name = merchant.name == null? '未设置' : merchant.name;
+                    this.temp_name = this.name;
+                    this.mobile = merchant.mobile;
+                    this.avatar = merchant.avatar == null ? '': base_url + merchant.avatar;
+                    this.temp_avatar = merchant.avatar == null ? '': base_url + merchant.avatar;
+                    this.merchant_id = merchant.id;
+                    this.merchant_short_name = merchantInfo.merchant_short_name == null ? '未设置' : merchantInfo.merchant_short_name;
+                    this.merchant_address = merchantInfo.merchant_address == null ? '未设置' : merchantInfo.merchant_address;
+                    this.merchant_enter = merchant.approve['merchant'] == 3 ? '已入驻' : '未入驻';
+                    this.merchant_approve = merchant.approve['dorm'] == 3 ? '已认证' : '未认证';
+                }else {
+                    if(response.data.code == '005') {
+                        this.login_check = false;
+                        window.localStorage.removeItem('HC.merchant');
+                        this.$dialog.confirm({
+                            title: '请重新登录',
+                            message: response.data.msg
+                        }).then(() => {
+                            window.location.href = 'login.html';
+                        }).catch(() => {
+                            window.location.href = '../index.html';
+                        });
+                    }
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+
+        }
+    });
+</script>
+
+</body>
+</html>

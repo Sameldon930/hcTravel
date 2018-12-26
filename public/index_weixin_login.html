@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>授权中</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body class=" login-bgimg ">
+
+</div>
+</body>
+    <div id="app1"></div>
+<script src="js/bundle.js"></script>
+<script src="js/wis.common.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app1',
+        data: {
+        },
+        created: function () {
+            //检查用户
+            var post_data = {
+                //code:data_id,
+                method: 'weixin.login',
+                nonce: 'weixin.login',
+            };
+            var _self = this;
+
+            axios.post('/api/v1', api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if (data.code == '201') {
+                        window.location.href = data.href;
+                    } else{
+                        WIS_toast({msg: '存在错误，请求帮助！', time: 3000, location: 'middle'});
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+        },
+    });
+
+</script>
+</html>

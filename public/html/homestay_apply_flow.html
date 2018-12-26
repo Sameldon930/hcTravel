@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <style>
+        .init-app {
+            min-height: 100vh;
+            max-width:100vw;
+            background-color: #f9f9f9;
+            white-space:normal;
+            overflow-x:hidden;
+            overflow-y:auto;
+        }
+        .van{
+            min-height: 30vh;
+            background:#181f23;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url("../img/config/hall_bgi.jpg") no-repeat;
+            background-size: cover;
+        }
+        a:hover,a:active,a:visited,a:link {
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app">
+    <div>
+        <van-nav-bar fixed title="办事大厅" left-arrow @click-left="onClickLeft"/>
+    </div>
+
+
+    <div style="width: 100%">
+        <img src="../img/config/apply_flow.png" alt="" @click="goHomestay" style="background-size: cover;width: 100%">
+    </div>
+
+    <div style="padding-top: 65px;"></div>
+    <div>
+        <van-tabbar v-model="active">
+            <van-tabbar-item icon="wap-home">首页</van-tabbar-item>
+            <van-tabbar-item icon="contact">我的</van-tabbar-item>
+        </van-tabbar>
+    </div>
+
+</div>
+<script src="../js/app1.js"></script>
+<script>
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+
+            };
+        },
+
+        methods: {
+            goHomestay(){
+                location.href="homestay.html"
+            },
+            onClickLeft(){
+                location.href="hall.html"
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

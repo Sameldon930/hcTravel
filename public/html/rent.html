@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .list_null{
+            display:flex;
+            width:100%;
+            margin: 1rem auto;
+            background-color:#fff;
+            height: 10vh;
+            justify-content: center;
+            border-radius: 40px;
+        }
+        .list_null_word{
+            display: flex;
+            margin: auto;
+            font-size: 1.5em;
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app">
+    <div>
+        <van-nav-bar fixed title="商铺招租" left-arrow @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+    <div v-show="silly" v-cloak>
+        <div class="list_null" v-if="items == ''||items==null"
+             v-cloak>
+            <div class="list_null_word">暂无招租信息!</div>
+        </div>
+        <div v-for="item in items">
+            <a :href="'rent_detail.html?id='+item.id">
+                <div style="width: 100vw;display: flex;border-bottom:1px solid #e3e3e3;
+">
+                    <div>
+                        <img style="padding: 0.5rem;width:7rem;height: 5rem;"
+                             :src="'../storage/serve/'+item.thumbnail" alt="">
+                    </div>
+                    <div style="width:64vw;padding:0.6rem;padding-left: 0;display: flex;flex-direction: column;justify-content: space-between;">
+                        <div style="width:100%;font-size: 1.1rem;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;word-break: break-all;">
+                            {{item.title}}
+                        </div>
+                        <div style="width:100%;color:gray; font-size: 0.7rem;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{ item.region }}</div>
+                        <div style="display: flex;width:100%;justify-content: space-between;font-size: 0.9rem;">
+                            <div style="color:#e51c23;font-size: 0.8rem;">{{item.rent_way}}</div>
+                            <div style="display: flex;justify-content: space-between;font-size: 0.9rem;">
+                                <div>个人-{{item.created_time}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    
+
+</div>
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+
+<script>
+    var post_data = {
+        method: 'rent.get.list',
+        nonce: 'rent.get.list',
+    };
+
+    var app = new Vue({
+        el:"#app",
+        data() {
+            return {
+                items:'',
+                silly:false
+            };
+        },
+        mounted () {
+            var _self =this ;
+            axios.post('/api/v1',api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+                    if(data.code == 200){
+                        _self.items = data.data;
+                        _self.silly = true;
+
+                    }
+                }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        methods: {
+
+            onClickLeft(){
+                location.href="../index.html"
+            }
+
+        }
+    });
+</script>
+
+</body>
+</html>

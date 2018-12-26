@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <style>
+        .van {
+            min-height: 30vh;
+            background: #181f23;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url("../img/config/hall_bgi.jpg") no-repeat;
+            background-size: cover;
+        }
+        .card-container{
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
+            padding: 14px 0;
+            width: 48vw;
+        }
+        .card-container-row {
+            display: flex;
+            width: 100vw;
+            margin-top: 8px;
+            justify-content: space-between;
+        }
+        .card-container img {
+            width: 2em;
+            height: 2em;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+    <div>
+        <van-nav-bar fixed
+                     title="办事大厅"
+                     left-arrow
+                     @click-left="onClickLeft"/>
+    </div>
+    <div class="fixed_nav_bar"></div>
+
+    <div style="padding-bottom: 8px;">
+        <van-cell-group class="van">
+        </van-cell-group>
+    </div>
+    <div style="margin-top: -7px;">
+        <div class="card-container-row">
+            <a @click="onClickApplyHomestay">
+                <div class="card-container">
+                    <img src="../img/icons/banshi/i01.png" alt="">
+                    <div style="padding-top: 4px;">民宿申请核验</div>
+                </div>
+            </a>
+            <div @click="test" class="card-container">
+                <img src="../img/icons/banshi/i02.png" alt="">
+                <div style="padding-top: 4px;">市场监督</div>
+            </div>
+        </div>
+        <div class="card-container-row">
+            <div class="card-container"  @click="test">
+                <img src="../img/icons/banshi/i03.png" alt="">
+                <div style="padding-top: 4px;">国土</div>
+            </div>
+            <div class="card-container"  @click="test">
+                <img src="../img/icons/banshi/i04.png" alt="">
+                <div style="padding-top: 4px;">建设</div>
+            </div>
+        </div>
+        <div class="card-container-row">
+            <div class="card-container"  @click="test">
+                <img src="../img/icons/banshi/i05.png" alt="">
+                <div style="padding-top: 4px;">环保</div>
+            </div>
+            <div class="card-container"  @click="test">
+                <img src="../img/icons/banshi/i06.png" alt="">
+                <div style="padding-top: 4px;">旅游</div>
+            </div>
+        </div>
+        <div class="card-container-row">
+            <div class="card-container"  @click="test">
+                <img src="../img/icons/banshi/i07.png" alt="">
+                <div style="padding-top: 4px;">文体</div>
+            </div>
+            <div class="card-container" @click="test">
+                <img src="../img/icons/banshi/i08.png" alt="">
+                <div style="padding-top: 4px;">市政</div>
+            </div>
+        </div>
+        <div class="card-container-row">
+            <div class="card-container" @click="test">
+                <img src="../img/icons/banshi/i09.png" alt="">
+                <div style="padding-top: 4px;">城管</div>
+            </div>
+            <div class="card-container" @click="test">
+                <img src="../img/icons/banshi/i10.png" alt="">
+                <div style="padding-top: 4px;">卫计</div>
+            </div>
+        </div>
+        <div class="card-container-row">
+            <div class="card-container" @click="test">
+                <img src="../img/icons/banshi/i11.png" alt="">
+                <div style="padding-top: 4px;">公安</div>
+            </div>
+            <div class="card-container" @click="test">
+                <img src="../img/icons/banshi/i12.png" alt="">
+                <div style="padding-top: 4px;">消防</div>
+            </div>
+        </div>
+        <div class="card-container-row">
+            <div class="card-container"  @click="test">
+                <img src="../img/icons/banshi/i13.png" alt="">
+                <div style="padding-top: 4px;">安监</div>
+            </div>
+        </div>
+        <div style="padding-top: 20px;"></div>
+    </div>
+</div>
+</body>
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script src="../js/dist/lrz.bundle.js"></script>
+<script>
+
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                active:null,
+                merchant_id:false,
+                token:false,
+            }
+        },
+
+        methods: {
+            test() {
+                this.$dialog.alert({
+                    title: "暂未开放该入口"
+                });
+            },
+            onClickLeft(){
+                location.href="../index.html"
+            },
+            onClickApplyHomestay(e) {
+                var obj = JSON.parse(window.localStorage.getItem('HC.merchant'));
+                if (obj == null) {
+                    this.login_check = false;
+                    this.$dialog.confirm({
+                        title: '请先登录',
+
+                    }).then(() => {
+                        window.location.href = 'login.html';
+                    }).catch(() => {
+
+                    });
+
+                } else {
+                    this.merchant_id = obj.data.id;
+                    this.token = obj.data.api_token;
+                    var post_data = {
+                        method: 'get.verify.status',
+                        nonce: 'get.verify.status',
+                        merchant_id: this.merchant_id,
+                        token: this.token,
+                    };
+                    var _self = this;
+                    axios.post('/api/v1', api_data_sign(post_data, 'hc'))
+                        .then(function (response) {
+                            var data = response.data;
+                            let merchant_data = response.data.data.merchant_data;
+                            if (data.code == 200) {
+                                if(data.data.dorm == 3){
+                                    _self.$dialog.alert({
+                                        title: '民宿核验成功，将进行房屋鉴定',
+                                    }).then(() => {
+                                        window.location.href = "house_audit.html"
+                                    })
+                                }else{
+                                    if(merchant_data.flow_status == 1){
+                                        window.location.href = "agreement.html"
+                                    }else {
+                                        window.location.href = "homestay.html"
+                                    }
+                                }
+
+                            }else{
+                                this.$dialog.confirm({
+                                    title: '请先登录',
+                                }).then(() => {
+                                    window.location.href = 'login.html';
+                                }).catch(() => {
+                                    window.history.go(-1);
+                                });
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                }
+            }
+        }
+    });
+</script>
+
+</html>

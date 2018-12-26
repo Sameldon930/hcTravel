@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="favicon.ico" title="Favicon">
+    <title>智慧黄厝</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta itemprop="name" content="智慧黄厝"/>
+    <meta itemprop="image" content="../img/config/share.png" />
+    <meta name="description" itemprop="description" content="黄厝商家、民宿服务管理、办证申请、会员管理；黄厝旅游景点、商家、民宿汇集及旅游攻略，超值预订打折优惠。" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!-- Styles -->
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link href="../css/app1.css" rel="stylesheet">
+    <link href="../css/hc.common.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        .hc-swipe {
+            height: 30vh;
+        }
+        .icon-container {
+            display:flex;
+            justify-content:space-around;
+            width: 100%;
+            align-items:center;
+            background-color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .icon-title {
+            line-height: 7vh;margin: 6px
+        }
+        .index-content {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .good-message > div{
+            padding: 2vw 3vw;
+            background: #ffffff;
+        }
+        .list-name{
+            width: 60%;
+            float: left;
+        }
+        .more{
+            width: 30%;
+            float: right;
+            text-align: right;
+        }
+        .clear-both:after{
+            clear: both;
+        }
+        .head-portrait{
+            width: 60px;
+            height: 60px;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+        .user-sm-list{
+            height: 104px;
+            padding: 2%;
+        }
+        .font-size16px{
+            font-size:16px;
+        }
+        .font-size10px{
+            font-size:10px;
+        }
+        .color-66{
+            color: #666666;
+        }
+        .color-red{
+            color: red;
+        }
+        .ma-t-5{
+            margin-top: 5%;
+        }
+        .pa-l-0{
+            padding-left: 0;
+        }
+        .pa-r-0{
+            padding-right: 0;
+        }
+        .pa-t-2{
+            padding-top: 2%;
+        }
+        .ma-r-10{
+            margin-right:10%;
+        }
+        .margin-bottom-10{
+            margin-bottom: 10%;
+        }
+        .text-align-right{
+            text-align: right;
+        }
+        .text-align-center{
+            text-align: center;
+        }
+        .h-50{
+            height: 50px;
+        }
+        .tel-num{
+            line-height: 50px;
+            font-size: 14px;
+            background: #ff8758 ;
+            color: white;
+            text-align: center;
+        }
+        .phone{
+            padding-top: 3%;
+            background: #e51c23;
+            color: white;
+        }
+        .ma-b-10{
+            margin-bottom: 10%;
+        }
+        .position-fixed{
+            left:0;
+            bottom: 1%;
+            width: 100%;
+            position: fixed;
+        }
+        .content-describe{
+            overflow: hidden;
+            font-size: 12px !important;
+            color:#666666;
+        }
+        .h-100{
+            height: 100px;
+        }
+
+        @media screen and (max-width: 321px){
+            .phone{
+              padding-top: 2%;
+            }
+            .tel-num{
+                line-height: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="init-app" v-cloak>
+
+    <!--<div>-->
+        <!--<van-nav-bar title="商户详细信息" left-arrow @click-left="onClickLeft"/>-->
+    <!--</div>-->
+    <!--<div>-->
+        <!--<van-nav-bar fixed title="智慧黄厝"/>-->
+    <!--</div>-->
+    <!--<div class="fixed_nav_bar"></div>-->
+    <div>
+        <van-nav-bar title="商户详情"
+                     fixed  left-arrow
+                     @click-left="onClickLeft"/>
+
+    </div>
+    <div class="fixed_nav_bar"></div>
+    <div>
+        <van-swipe :autoplay="3000" class="hc-swipe">
+            <van-swipe-item v-for="(image, index) in images" :key="index">
+                <img :src="'../storage/serve/'+image" style="width: 100%;height: 100%;"/>
+            </van-swipe-item>
+        </van-swipe>
+    </div>
+    <div class="good-message" >
+        <div>
+            <div class="container-fluid">
+                <div class="row ">
+                    <div class="col-xs-12 pa-l-0 pa-r-0">
+                        <div class="row font-size14px">
+                            <div class="col-xs-7 font-size16px">{{(merchant_name == null || merchant_name == "" )? "暂无描述": merchant_name}}</div>
+                            <div class="col-xs-1"></div>
+                            <div class="col-xs-4 text-align-right ">
+                                <span v-if=" score == null || score < 1 "  style="font-size: 18px">1 分</span>
+                                <span v-else-if=" score > 5 " style="font-size: 18px">5分</span>
+                                <span v-else  style="font-size: 18px">{{ score }} 分</span>
+                                <span v-if="score >= 5" style="font-size: 12px">超赞</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8 font-size10px color-66">
+                                {{(merchant_address == null || merchant_address == '')? "暂无描述": merchant_address }}
+                            </div>
+                            <div v-if=" score == null || score < 1 "  class="col-xs-4 font-size10px text-align-right"style="color: #f9c953;">
+                                ★☆☆☆☆
+                            </div>
+                            <div v-if=" score >=1  &&  score < 2 "  class="col-xs-4 font-size10px text-align-right"style="color: #f9c953;">
+                                ★☆☆☆☆
+                            </div>
+                            <div v-if=" score >=2  &&  score < 3 "  class="col-xs-4 font-size10px text-align-right"style="color: #f9c953;">
+                                ★★☆☆☆
+                            </div>
+                            <div v-if=" score >=3  &&  score < 4 "  class="col-xs-4 font-size10px text-align-right"style="color: #f9c953;">
+                                ★★★☆☆
+                            </div>
+                            <div v-if=" score >=4  &&  score < 5 "  class="col-xs-4 font-size10px text-align-right"style="color: #f9c953;">
+                                ★★★★☆
+                            </div>
+                            <div v-if=" score == 5 || score > 5 "  class="col-xs-4 font-size10px text-align-right"style="color: #f9c953;">
+                                ★★★★★
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height: 10px;background: #f9f9f9"></div>
+    <div class="good-message">
+        <div class="container-fluid">
+            <div  class="row">
+                <div class="col-xs-7" style="font-size: 12px;color: #101010">
+                    注册时间：<span style="font-size: 12px;color: #666666"> {{(now == '1970-01-01'|| now == '') ? "暂无描述": now }}</span>
+                </div>
+                <div class="col-xs-1"></div>
+                <div class="col-xs-4 text-align-right" style="font-size: 12px;color: #101010" >
+                    经营时间：<span v-if="time == null || time ==''" style="font-size: 12px;color: #666666">暂无描述</span>
+                              <span v-else style="font-size: 12px;color: #666666">{{ time  }}&nbsp;年</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height: 10px;background: #f9f9f9"></div>
+    <div class="good-message">
+        <div>
+            <div style="border-left: 3px solid #e51c23; color: #101010;font-size: 14px">&nbsp;介绍</div>
+        </div>
+    </div>
+
+    <div class="good-message " style="min-height:10%;">
+        <div style="margin-bottom: 10%">
+            <div class="content-describe " v-html='content'>
+                {{ (content == null || content == "") ? '暂无描述': content }}
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid ma-b-10 position-fixed">
+        <div class="row h-50">
+            <a :href="'tel:'+[mobile]">
+                <div class="col-xs-6 tel-num h-50">
+                    Tel:{{ (mobile  == null || mobile == "") ? "暂无号码": mobile }}
+                </div>
+                <div  class="col-xs-6 phone h-50  text-align-center">
+                    <i v-if=" mobile != null " class="fa fa-phone fa-2x"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <van-tabbar v-model="active">
+            <van-tabbar-item icon="wap-home" @click="onClickIndex" >首页</van-tabbar-item>
+            <van-tabbar-item icon="contact" @click="myMerchant">我的</van-tabbar-item>
+        </van-tabbar>
+    </div>
+
+</div>
+
+<script src="../js/app1.js"></script>
+<script src="../js/hc.common.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script>
+//    详情页接口
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var data_id = GetQueryString("id");
+    //活动内容
+    var post_data = {
+        id: data_id,
+        method: 'merchant.get.details',
+        nonce: 'merchant.get.details',
+    };
+
+    var app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                items: '',
+                merchant_name: '',
+                merchant_address: '',
+                now: '',
+                content: '',
+                mobile: '',
+                created_time: '',
+                active: 0,
+                images: [],
+                time:"",
+                score:""
+            };
+        },
+        mounted() {
+            var _self = this;
+
+            axios.post('/api/v1', api_data_sign(post_data, 'hc'))
+                .then(function (response) {
+                    var data = response.data;
+//                     console.log(data.data)
+                    if (data.code == 200) {
+                        _self.items = data.data;
+                        _self.merchant_name = data.data.merchant_name;
+                        _self.merchant_address = data.data.merchant_address;
+                        _self.now = data.data.now;
+                        _self.content = data.data.content;
+                        _self.mobile = data.data.mobile;
+                        _self.time = data.data.time;
+                        _self.score = data.data.score;
+                        _self.interior_figure_one = data.data.interior_figure_one;
+                        _self.interior_figure_three = data.data.interior_figure_three;
+                        _self.interior_figure_two = data.data.interior_figure_two;
+                        _self.images.push(_self.interior_figure_one,_self.interior_figure_two,_self.interior_figure_three)
+                        console.log(_self.data)
+                    }
+
+                }).catch(function (error) {
+                // console.log(error);
+            });
+        },
+
+        methods: {
+            onClickLeft(){
+                window.history.go(-1)
+            },
+            onClickIndex(){
+                location.href="../index.html"
+            },
+            myMerchant(){
+                location.href="merchant.html"
+            }
+        }
+
+    });
+</script>
+
+</body>
+</html>
